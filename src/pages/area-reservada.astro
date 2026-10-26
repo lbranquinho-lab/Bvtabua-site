@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import { site } from '../data/site';
+
+const repositorio = 'https://github.com/lbranquinho-lab/Bvtabua-site';
+---
+
+<Base title="Área reservada" description="Acesso reservado à equipa que gere o site." semIndexar>
+  <CabecalhoPagina titulo="Área reservada" resumo="Acesso para a equipa da associação que publica notícias e atualiza o site." />
+
+  <div class="contentor seccao">
+    <div class="cartao entrar">
+      <h2>Entrar no painel do site</h2>
+      <p>
+        O painel abre numa nova página. Entre com a sua conta GitHub autorizada pela associação para publicar
+        notícias, fotografias e documentos.
+      </p>
+      <p>
+        <a class="botao botao-primario" href="https://app.pagescms.org" rel="noopener">Entrar com GitHub</a>
+      </p>
+      <p class="nota">
+        Ainda não tem acesso? Peça à Direção para o adicionar como colaborador do
+        <a href={repositorio} rel="noopener">repositório do site</a>, ou escreva para
+        <a href={`mailto:${site.email}?subject=Acesso%20ao%20painel%20do%20site`}>{site.email}</a>.
+      </p>
+    </div>
+
+    <div class="prosa">
+      <h2>Como publicar uma notícia</h2>
+      <ol>
+        <li>Carregue em «Entrar com GitHub» e escolha o repositório <strong>Bvtabua-site</strong>.</li>
+        <li>No menu, abra <strong>Notícias</strong> e carregue em <strong>Add an entry</strong>.</li>
+        <li>Preencha o título, a data, o resumo e o texto, e junte uma fotografia se quiser.</li>
+        <li>Carregue em <strong>Save</strong>. A notícia aparece no site em 2 a 3 minutos.</li>
+      </ol>
+      <p>Para guardar sem publicar, marque «Rascunho».</p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .entrar {
+    max-width: 36rem;
+    border-top: 4px solid var(--vermelho);
+  }
+
+  .entrar h2 {
+    margin-top: 0;
+  }
+
+  .nota {
+    font-size: 0.95rem;
+    color: var(--tinta-suave);
+  }
+</style>

@@ -4,5 +4,5 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://bvtabua.pt',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (pagina) => !pagina.includes('/area-reservada/') })],
 });
