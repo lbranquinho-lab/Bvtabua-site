@@ -3,8 +3,9 @@
 Site oficial da Associação Humanitária dos Bombeiros Voluntários de Tábua, publicado em
 [bvtabua.pt](https://bvtabua.pt).
 
-Feito com [Astro](https://astro.build) (site estático) e publicado automaticamente no GitHub Pages a cada
-alteração no ramo `main`.
+Feito com [Astro](https://astro.build) (site estático) e publicado automaticamente no alojamento cPanel, por FTP,
+a cada alteração no ramo `main`. Até ao lançamento, o site está protegido por palavra-passe (Directory Privacy do
+cPanel) e não é indexado pelos motores de busca.
 
 ## Páginas
 
@@ -48,8 +49,12 @@ npm run build    # gera o site em dist/
 
 ## Alojamento e domínio
 
-1. No GitHub: Settings → Pages → Source: **GitHub Actions**.
-2. No registo DNS de `bvtabua.pt`, criar quatro registos `A` para `@` com os IPs `185.199.108.153`,
-   `185.199.109.153`, `185.199.110.153` e `185.199.111.153`, e um `CNAME` para `www` apontado para
-   `<utilizador>.github.io`.
-3. Em Settings → Pages, confirmar o domínio `bvtabua.pt` e ativar **Enforce HTTPS**.
+O domínio `bvtabua.pt` aponta para o alojamento cPanel (registo A `62.193.193.44`).
+
+1. Publicação automática: em GitHub → Settings → Secrets and variables → Actions, criar os segredos
+   `FTP_SERVER`, `FTP_USERNAME` e `FTP_PASSWORD` com os dados de uma conta FTP do cPanel. Sem eles, o site
+   só é compilado e tem de ser enviado à mão (pasta `dist/` para `public_html/`).
+2. Proteção por palavra-passe: cPanel → Directory Privacy → `public_html` → ativar a proteção e criar
+   utilizadores.
+3. No lançamento: retirar a proteção em Directory Privacy e trocar o `public/robots.txt` para permitir a
+   indexação.

@@ -1,4 +1,4 @@
+# Site em pré-visualização: não indexar até ao lançamento.
+# No lançamento, substituir por "Allow: /" e acrescentar o Sitemap.
 User-agent: *
-Allow: /
-
-Sitemap: https://bvtabua.pt/sitemap-index.xml
+Disallow: /
