@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import { site } from '../data/site';
+---
+
+<Base title="Declaração de acessibilidade">
+  <CabecalhoPagina titulo="Declaração de acessibilidade" />
+  <div class="contentor seccao prosa">
+    <p>
+      A {site.associacao} compromete-se a tornar este site acessível, de acordo com o Decreto-Lei n.º 83/2018 e
+      as Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.1, nível AA.
+    </p>
+    <h2>Medidas adotadas</h2>
+    <ul>
+      <li>Estrutura de títulos e regiões que facilita a navegação com leitores de ecrã.</li>
+      <li>Contraste de cores adequado e texto redimensionável.</li>
+      <li>Navegação completa por teclado, com foco visível.</li>
+      <li>Ligação para saltar diretamente para o conteúdo.</li>
+    </ul>
+    <h2>Contacto</h2>
+    <p>
+      Se encontrar alguma barreira de acessibilidade, diga-nos através de
+      <a href={`mailto:${site.email}`}>{site.email}</a>.
+    </p>
+  </div>
+</Base>

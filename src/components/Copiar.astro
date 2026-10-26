@@ -1,0 +1,56 @@
+---
+interface Props {
+  rotulo: string;
+  valor: string;
+}
+
+const { rotulo, valor } = Astro.props;
+---
+
+<div class="copiar">
+  <span class="copiar__rotulo">{rotulo}</span>
+  <code class="copiar__valor">{valor}</code>
+  <button class="botao botao-secundario copiar__botao" type="button" data-valor={valor.replace(/\s/g, '')}>Copiar</button>
+</div>
+
+<style>
+  .copiar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.2rem 0.75rem;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--linha);
+  }
+
+  .copiar__rotulo {
+    grid-column: 1 / -1;
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+
+  .copiar__valor {
+    font-size: 1.1rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .copiar__botao {
+    padding: 0.4em 0.8em;
+    font-size: 0.9rem;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.copiar__botao').forEach((botao) => {
+    botao.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(botao.dataset.valor ?? '');
+        botao.textContent = 'Copiado';
+        setTimeout(() => (botao.textContent = 'Copiar'), 2000);
+      } catch {
+        botao.textContent = 'Selecione e copie';
+      }
+    });
+  });
+</script>

@@ -1,0 +1,250 @@
+:root {
+  --vermelho: #b3121b;
+  --vermelho-escuro: #8a0d14;
+  --amarelo: #f5b700;
+  --tinta: #1d1f23;
+  --tinta-suave: #4a4f57;
+  --fundo: #ffffff;
+  --fundo-alt: #f5f3f0;
+  --linha: #e2ded8;
+  --raio: 10px;
+  --largura: 72rem;
+  --sombra: 0 1px 2px rgb(0 0 0 / 6%), 0 4px 16px rgb(0 0 0 / 6%);
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--tinta);
+  background: var(--fundo);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--vermelho);
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--vermelho-escuro);
+}
+
+:focus-visible {
+  outline: 3px solid var(--amarelo);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 0.5em;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 2em 0 0.6em;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 1.5em 0 0.4em;
+}
+
+.contentor {
+  width: 100%;
+  max-width: var(--largura);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.saltar {
+  position: absolute;
+  left: -9999px;
+}
+
+.saltar:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  background: var(--fundo);
+  padding: 0.5rem 1rem;
+}
+
+/* Botões */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.7em 1.2em;
+  border-radius: var(--raio);
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid transparent;
+  line-height: 1.2;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.botao-primario {
+  background: var(--vermelho);
+  color: #fff;
+}
+
+.botao-primario:hover {
+  background: var(--vermelho-escuro);
+  color: #fff;
+}
+
+.botao-secundario {
+  background: transparent;
+  color: var(--vermelho);
+  border-color: var(--vermelho);
+}
+
+.botao-secundario:hover {
+  background: var(--vermelho);
+  color: #fff;
+}
+
+.botao-claro {
+  background: #fff;
+  color: var(--vermelho);
+}
+
+.botao-claro:hover {
+  background: var(--fundo-alt);
+}
+
+/* Secções e cabeçalhos de página */
+.cabecalho-pagina {
+  background: var(--fundo-alt);
+  border-bottom: 1px solid var(--linha);
+  padding: 3rem 0 2rem;
+}
+
+.cabecalho-pagina p {
+  font-size: 1.15rem;
+  color: var(--tinta-suave);
+  max-width: 44rem;
+  margin: 0;
+}
+
+.seccao {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.prosa {
+  max-width: 46rem;
+}
+
+.grelha {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.cartao {
+  background: var(--fundo);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+.cartao h3 {
+  margin-top: 0;
+}
+
+.cartao p:last-child {
+  margin-bottom: 0;
+}
+
+.destaque {
+  background: var(--fundo-alt);
+  border-left: 4px solid var(--vermelho);
+  padding: 1rem 1.25rem;
+  border-radius: 0 var(--raio) var(--raio) 0;
+  margin: 1.5rem 0;
+}
+
+.provisorio {
+  background: #fff6d6;
+  border: 1px dashed #c9a100;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio);
+  font-size: 0.95rem;
+  margin: 1rem 0;
+}
+
+/* Formulários */
+.formulario {
+  display: grid;
+  gap: 1rem;
+  max-width: 36rem;
+}
+
+.formulario label {
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+.formulario input,
+.formulario select,
+.formulario textarea {
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #b9b3aa;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--tinta);
+}
+
+.formulario .consentimento {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+.formulario .consentimento input {
+  margin-top: 0.3rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--linha);
+  vertical-align: top;
+}

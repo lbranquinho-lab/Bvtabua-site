@@ -1,0 +1,36 @@
+---
+import { site, telLink } from '../data/site';
+
+interface Props {
+  assunto: string;
+  botao?: string;
+}
+
+const { assunto, botao = 'Enviar' } = Astro.props;
+---
+
+{
+  site.formEndpoint ? (
+    <form class="formulario" method="POST" action={site.formEndpoint}>
+      <input type="hidden" name="_subject" value={`[Site] ${assunto}`} />
+      <slot />
+      <label class="consentimento">
+        <input type="checkbox" name="consentimento" required />
+        <span>
+          Autorizo o tratamento dos meus dados para responder a este pedido, nos termos da{' '}
+          <a href="/privacidade/">política de privacidade</a>.
+        </span>
+      </label>
+      <div>
+        <button class="botao botao-primario" type="submit">{botao}</button>
+      </div>
+    </form>
+  ) : (
+    <div class="destaque">
+      <p>
+        Envie-nos um email para <a href={`mailto:${site.email}?subject=${encodeURIComponent(assunto)}`}>{site.email}</a>{' '}
+        com o assunto «{assunto}», ou ligue para <a href={telLink(site.telefone)}>{site.telefone}</a>.
+      </p>
+    </div>
+  )
+}

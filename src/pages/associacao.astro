@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import Provisorio from '../components/Provisorio.astro';
+import { site } from '../data/site';
+
+// Documentos de transparência: colocar os PDFs em public/documentos/ e acrescentar aqui.
+const documentos: { ano: number; titulo: string; ficheiro: string }[] = [];
+---
+
+<Base title="A Associação" description={`História, órgãos sociais e transparência da ${site.associacao}.`}>
+  <CabecalhoPagina
+    titulo="A Associação"
+    resumo="Uma associação humanitária sem fins lucrativos, sustentada pelos sócios, pela comunidade e pelo trabalho voluntário."
+  />
+
+  <div class="contentor seccao prosa">
+    <h2 id="historia">A nossa história</h2>
+    <Provisorio>Substituir pela história da associação: data de fundação, fundadores, marcos e evolução do quartel.</Provisorio>
+    <p>
+      A {site.associacao} nasceu da vontade da população de Tábua de ter um corpo de bombeiros próprio, capaz de
+      responder aos incêndios e às emergências do concelho. Desde então, gerações de voluntários deram o seu tempo
+      para proteger pessoas e bens.
+    </p>
+
+    <h2 id="presidente">Mensagem do Presidente da Direção</h2>
+    <Provisorio>Texto e fotografia do Presidente da Direção.</Provisorio>
+
+    <h2 id="orgaos-sociais">Órgãos sociais</h2>
+    <Provisorio>Nomes e cargos para o mandato em curso.</Provisorio>
+    <div class="grelha">
+      <div class="cartao">
+        <h3>Assembleia Geral</h3>
+        <p>Presidente, Vice-Presidente e Secretários.</p>
+      </div>
+      <div class="cartao">
+        <h3>Direção</h3>
+        <p>Presidente, Vice-Presidentes, Secretário, Tesoureiro e Vogais.</p>
+      </div>
+      <div class="cartao">
+        <h3>Conselho Fiscal</h3>
+        <p>Presidente, Relator e Vogal.</p>
+      </div>
+    </div>
+
+    <h2 id="memoria">Em memória</h2>
+    <p>
+      Honramos os bombeiros da nossa associação que perderam a vida ao serviço da comunidade. O seu exemplo
+      continua a guiar quem hoje veste a farda.
+    </p>
+    <Provisorio>Nomes e homenagem, se a associação assim o entender.</Provisorio>
+
+    <h2 id="transparencia">Transparência</h2>
+    <p>Publicamos os estatutos e os documentos de prestação de contas aprovados em Assembleia Geral.</p>
+    {
+      documentos.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>Ano</th>
+              <th>Documento</th>
+            </tr>
+          </thead>
+          <tbody>
+            {documentos.map((d) => (
+              <tr>
+                <td>{d.ano}</td>
+                <td>
+                  <a href={`/documentos/${d.ficheiro}`}>{d.titulo}</a> (PDF)
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <Provisorio>Enviar em PDF: estatutos, relatório e contas e plano de atividades e orçamento dos últimos anos.</Provisorio>
+      )
+    }
+  </div>
+</Base>

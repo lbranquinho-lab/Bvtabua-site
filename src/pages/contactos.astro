@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import Formulario from '../components/Formulario.astro';
+import { site, telLink } from '../data/site';
+---
+
+<Base title="Contactos" description="Morada, telefone, email e horário dos Bombeiros Voluntários de Tábua.">
+  <CabecalhoPagina titulo="Contactos" resumo="Em caso de emergência ligue 112. Para tudo o resto, estamos aqui." />
+
+  <div class="contentor seccao">
+    <div class="colunas">
+      <div>
+        <dl class="dados">
+          <dt>Emergência</dt>
+          <dd><a href={telLink(site.emergencia)}><strong>{site.emergencia}</strong></a></dd>
+          <dt>Quartel (24 horas)</dt>
+          <dd><a href={telLink(site.telefone)}>{site.telefone}</a></dd>
+          <dt>Email</dt>
+          <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+          <dt>Morada</dt>
+          <dd>{site.morada}<br /><a href={site.mapaUrl} rel="noopener">Ver no mapa</a></dd>
+          <dt>Secretaria</dt>
+          <dd>{site.horarioSecretaria}</dd>
+        </dl>
+      </div>
+      <div>
+        <h2 class="sem-margem">Envie-nos uma mensagem</h2>
+        <Formulario assunto="Contacto pelo site">
+          <label>Nome <input name="nome" autocomplete="name" required /></label>
+          <label>Email <input name="email" type="email" autocomplete="email" required /></label>
+          <label>
+            Assunto
+            <select name="assunto">
+              <option>Informação geral</option>
+              <option>Transporte de doentes</option>
+              <option>Prevenção em evento</option>
+              <option>Formação</option>
+              <option>Sócios e donativos</option>
+              <option>Outro</option>
+            </select>
+          </label>
+          <label>Mensagem <textarea name="mensagem" rows="5" required></textarea></label>
+        </Formulario>
+      </div>
+    </div>
+
+    <div class="prosa">
+      <h2 id="denuncias">Canal de denúncias</h2>
+      <p>
+        Para comunicar, de forma confidencial, irregularidades relacionadas com a associação, escreva para
+        <a href={`mailto:${site.email}?subject=Den%C3%BAncia%20confidencial`}>{site.email}</a> com o assunto
+        «Denúncia confidencial». A comunicação será tratada com sigilo, nos termos da Lei n.º 93/2021.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .colunas {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 52rem) {
+    .colunas {
+      grid-template-columns: 1fr 1.3fr;
+    }
+  }
+
+  .sem-margem {
+    margin-top: 0;
+  }
+
+  .dados {
+    margin: 0;
+  }
+
+  .dados dt {
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+    margin-top: 1.1rem;
+  }
+
+  .dados dt:first-child {
+    margin-top: 0;
+  }
+
+  .dados dd {
+    margin: 0.15rem 0 0;
+    font-size: 1.1rem;
+  }
+</style>

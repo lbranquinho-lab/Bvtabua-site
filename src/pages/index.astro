@@ -1,0 +1,261 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { site, telLink } from '../data/site';
+
+const noticias = (await getCollection('noticias', ({ data }) => !data.rascunho))
+  .sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf())
+  .slice(0, 3);
+
+const formatarData = (d: Date) =>
+  d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<Base>
+  <section class="heroi">
+    <div class="contentor heroi__interior">
+      <div>
+        <p class="heroi__pre">Concelho de Tábua · Distrito de Coimbra</p>
+        <h1>Prontos para socorrer, todos os dias do ano.</h1>
+        <p class="heroi__texto">
+          Somos os bombeiros voluntários do concelho de Tábua. Combatemos incêndios, prestamos socorro e
+          emergência pré-hospitalar e transportamos doentes. Contamos com a comunidade para continuar.
+        </p>
+        <div class="heroi__acoes">
+          <a class="botao botao-claro" href="/apoiar/">Ser sócio ou doar</a>
+          <a class="botao botao-contorno" href="/ser-bombeiro/">Quero ser bombeiro</a>
+        </div>
+      </div>
+      <a class="cartao-112" href={telLink(site.emergencia)}>
+        <span>Em caso de emergência</span>
+        <strong>112</strong>
+        <span>Chamada gratuita, 24 horas</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="seccao">
+    <div class="contentor">
+      <h2 class="sem-margem">Como pode ajudar</h2>
+      <div class="grelha">
+        <a class="cartao cartao-acao" href="/apoiar/#socio">
+          <h3>Torne-se sócio</h3>
+          <p>Por {site.quotaAnual} por ano ajuda a manter viaturas, equipamento e formação.</p>
+          <span aria-hidden="true">Saber mais →</span>
+        </a>
+        <a class="cartao cartao-acao" href="/apoiar/#donativos">
+          <h3>Faça um donativo</h3>
+          <p>Por MB Way ou transferência bancária, em poucos segundos.</p>
+          <span aria-hidden="true">Doar →</span>
+        </a>
+        <a class="cartao cartao-acao" href="/ser-bombeiro/">
+          <h3>Seja bombeiro voluntário</h3>
+          <p>Formação completa, espírito de equipa e a oportunidade de servir a sua terra.</p>
+          <span aria-hidden="true">Candidatar-me →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccao seccao-alt">
+    <div class="contentor">
+      <h2 class="sem-margem">O que fazemos</h2>
+      <div class="grelha">
+        <div class="cartao">
+          <h3>Combate a incêndios</h3>
+          <p>Incêndios urbanos, industriais e rurais no concelho e em reforço de outros concelhos.</p>
+        </div>
+        <div class="cartao">
+          <h3>Emergência pré-hospitalar</h3>
+          <p>Socorro a vítimas de doença súbita e acidentes, em articulação com o INEM.</p>
+        </div>
+        <div class="cartao">
+          <h3>Transporte de doentes</h3>
+          <p>Transporte não urgente para consultas, tratamentos e altas hospitalares.</p>
+        </div>
+        <div class="cartao">
+          <h3>Proteção civil</h3>
+          <p>Acidentes rodoviários, cheias, salvamentos e apoio à população.</p>
+        </div>
+      </div>
+      <p><a href="/servicos/">Ver todos os serviços →</a></p>
+    </div>
+  </section>
+
+  <section class="seccao">
+    <div class="contentor">
+      <div class="grelha-2">
+        <div>
+          <h2 class="sem-margem">Últimas notícias</h2>
+          <ul class="lista-noticias">
+            {
+              noticias.map((n) => (
+                <li>
+                  <time datetime={n.data.data.toISOString().slice(0, 10)}>{formatarData(n.data.data)}</time>
+                  <a href={`/noticias/${n.id}/`}>{n.data.titulo}</a>
+                </li>
+              ))
+            }
+          </ul>
+          <p><a href="/noticias/">Todas as notícias →</a></p>
+        </div>
+        <div class="cartao risco">
+          <h2 class="sem-margem">Risco de incêndio hoje</h2>
+          <p>
+            Consulte o risco de incêndio rural para o concelho de Tábua antes de fazer queimas, queimadas ou
+            trabalhos com máquinas no campo.
+          </p>
+          <p>
+            <a class="botao botao-secundario" href="https://www.ipma.pt/pt/riscoincendio/rcm.pt/" rel="noopener">
+              Ver risco no IPMA
+            </a>
+          </p>
+          <p><a href="/prevencao/">Conselhos de prevenção →</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .heroi {
+    background:
+      linear-gradient(120deg, rgb(138 13 20 / 96%), rgb(179 18 27 / 88%)),
+      var(--vermelho);
+    color: #fff;
+    padding: 3.5rem 0;
+  }
+
+  .heroi__interior {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  @media (min-width: 52rem) {
+    .heroi__interior {
+      grid-template-columns: 1fr 18rem;
+    }
+  }
+
+  .heroi__pre {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.85;
+    margin: 0 0 0.75rem;
+  }
+
+  .heroi__texto {
+    font-size: 1.15rem;
+    max-width: 38rem;
+    opacity: 0.95;
+  }
+
+  .heroi__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .botao-contorno {
+    color: #fff;
+    border-color: #fff;
+  }
+
+  .botao-contorno:hover {
+    background: #fff;
+    color: var(--vermelho);
+  }
+
+  .cartao-112 {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    background: #fff;
+    color: var(--vermelho);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+  }
+
+  .cartao-112 strong {
+    font-size: 4.5rem;
+    line-height: 1;
+    margin: 0.25rem 0;
+  }
+
+  .cartao-112 span {
+    color: var(--tinta);
+    font-weight: 600;
+  }
+
+  .sem-margem {
+    margin-top: 0;
+  }
+
+  .seccao-alt {
+    background: var(--fundo-alt);
+  }
+
+  .seccao-alt .cartao {
+    background: #fff;
+  }
+
+  .cartao-acao {
+    text-decoration: none;
+    color: var(--tinta);
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+
+  .cartao-acao:hover {
+    border-color: var(--vermelho);
+    box-shadow: var(--sombra);
+    color: var(--tinta);
+  }
+
+  .cartao-acao span {
+    color: var(--vermelho);
+    font-weight: 600;
+  }
+
+  .grelha-2 {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 52rem) {
+    .grelha-2 {
+      grid-template-columns: 3fr 2fr;
+    }
+  }
+
+  .lista-noticias {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .lista-noticias li {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--linha);
+    display: grid;
+  }
+
+  .lista-noticias time {
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+
+  .lista-noticias a {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .risco {
+    border-top: 4px solid var(--amarelo);
+  }
+</style>

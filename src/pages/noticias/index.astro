@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CabecalhoPagina from '../../components/CabecalhoPagina.astro';
+
+const noticias = (await getCollection('noticias', ({ data }) => !data.rascunho)).sort(
+  (a, b) => b.data.data.valueOf() - a.data.data.valueOf(),
+);
+
+const formatarData = (d: Date) =>
+  d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<Base title="Notícias e eventos" description="Notícias, eventos e atividades dos Bombeiros Voluntários de Tábua.">
+  <CabecalhoPagina titulo="Notícias e eventos" resumo="O que se passa no quartel e no concelho." />
+
+  <div class="contentor seccao">
+    <div class="grelha">
+      {
+        noticias.map((n) => (
+          <article class="cartao noticia">
+            {n.data.imagem && <img src={n.data.imagem} alt="" loading="lazy" />}
+            <time datetime={n.data.data.toISOString().slice(0, 10)}>{formatarData(n.data.data)}</time>
+            <h2>
+              <a href={`/noticias/${n.id}/`}>{n.data.titulo}</a>
+            </h2>
+            <p>{n.data.resumo}</p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="redes">Acompanhe também o dia a dia do quartel no Facebook e no Instagram.</p>
+  </div>
+</Base>
+
+<style>
+  .noticia img {
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .noticia time {
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+
+  .noticia h2 {
+    font-size: 1.2rem;
+    margin: 0.3rem 0 0.5rem;
+  }
+
+  .noticia h2 a {
+    color: var(--tinta);
+    text-decoration: none;
+  }
+
+  .noticia h2 a:hover {
+    color: var(--vermelho);
+  }
+
+  .redes {
+    margin-top: 2rem;
+    color: var(--tinta-suave);
+  }
+</style>

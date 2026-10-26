@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import Provisorio from '../components/Provisorio.astro';
+import Copiar from '../components/Copiar.astro';
+import Formulario from '../components/Formulario.astro';
+import { site } from '../data/site';
+---
+
+<Base title="Ser sócio e apoiar" description="Torne-se sócio ou faça um donativo aos Bombeiros Voluntários de Tábua por MB Way ou transferência bancária.">
+  <CabecalhoPagina
+    titulo="Ser sócio e apoiar"
+    resumo="Os bombeiros voluntários existem porque a comunidade os sustenta. Cada quota e cada donativo conta."
+  />
+
+  <div class="contentor seccao">
+    <div class="duas-colunas">
+      <section id="socio">
+        <h2 class="sem-margem">Torne-se sócio</h2>
+        <p class="preco">{site.quotaAnual} <span>por ano</span></p>
+        <p>Como sócio:</p>
+        <ul>
+          <li>Ajuda a manter viaturas, equipamento de proteção e formação dos bombeiros.</li>
+          <li>Participa e vota na Assembleia Geral da associação.</li>
+          <li>Tem acesso às condições definidas pela associação para sócios.</li>
+        </ul>
+        <Provisorio>Confirmar valor da quota e benefícios concretos (por exemplo, condições no transporte de doentes).</Provisorio>
+
+        <h3>Pedido de inscrição</h3>
+        <Formulario assunto="Inscrição de sócio" botao="Enviar inscrição">
+          <label>Nome completo <input name="nome" autocomplete="name" required /></label>
+          <label>Data de nascimento <input name="nascimento" type="date" required /></label>
+          <label>NIF <input name="nif" inputmode="numeric" pattern="[0-9]{9}" required /></label>
+          <label>Morada <input name="morada" autocomplete="street-address" required /></label>
+          <label>Telemóvel <input name="telefone" type="tel" autocomplete="tel" required /></label>
+          <label>Email <input name="email" type="email" autocomplete="email" /></label>
+        </Formulario>
+      </section>
+
+      <section id="donativos" class="cartao donativos">
+        <h2 class="sem-margem">Faça um donativo</h2>
+        <p>Qualquer valor ajuda. Os donativos são aplicados em equipamento, viaturas e formação.</p>
+
+        <h3>MB Way</h3>
+        <Copiar rotulo="Número MB Way" valor={site.mbway} />
+
+        <h3>Transferência bancária</h3>
+        <Copiar rotulo="IBAN" valor={site.iban} />
+        <p class="nota">Titular: {site.associacao}</p>
+
+        <h3>Recibo</h3>
+        <p>
+          Se precisar de recibo para efeitos fiscais, envie o comprovativo e o seu NIF para
+          <a href={`mailto:${site.email}?subject=Recibo%20de%20donativo`}>{site.email}</a>.
+        </p>
+      </section>
+    </div>
+
+    <div class="prosa">
+      <h2 id="empresas">Empresas e mecenato</h2>
+      <p>
+        As empresas podem apoiar a associação através de donativos em dinheiro ou em espécie, patrocínio de
+        equipamento ou viaturas, e beneficiar do regime do mecenato previsto no Estatuto dos Benefícios Fiscais.
+      </p>
+      <Provisorio>Confirmar o enquadramento fiscal da associação e acrescentar a lista de parceiros.</Provisorio>
+      <p><a class="botao botao-secundario" href="/contactos/">Falar connosco</a></p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .duas-colunas {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (min-width: 56rem) {
+    .duas-colunas {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .sem-margem {
+    margin-top: 0;
+  }
+
+  .preco {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--vermelho);
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  .preco span {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--tinta-suave);
+  }
+
+  .donativos {
+    border-top: 4px solid var(--vermelho);
+  }
+
+  .nota {
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+</style>

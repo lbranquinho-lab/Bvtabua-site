@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+---
+
+<Base title="Prevenção" description="Risco de incêndio, queimas e queimadas, limpeza de terrenos e conselhos de segurança dos Bombeiros Voluntários de Tábua.">
+  <CabecalhoPagina titulo="Prevenção" resumo="A maior parte das emergências pode ser evitada. Conheça as regras e os conselhos essenciais." />
+
+  <div class="contentor seccao">
+    <div class="grelha">
+      <a class="cartao ligacao" href="https://www.ipma.pt/pt/riscoincendio/rcm.pt/" rel="noopener">
+        <h3>Risco de incêndio</h3>
+        <p>Risco de incêndio rural por concelho, atualizado diariamente pelo IPMA.</p>
+      </a>
+      <a class="cartao ligacao" href="https://www.icnf.pt/" rel="noopener">
+        <h3>Queimas e queimadas</h3>
+        <p>Comunique ou peça autorização para queimas e queimadas na plataforma do ICNF.</p>
+      </a>
+      <a class="cartao ligacao" href="https://prociv.gov.pt/" rel="noopener">
+        <h3>Avisos à população</h3>
+        <p>Avisos e alertas da Autoridade Nacional de Emergência e Proteção Civil.</p>
+      </a>
+    </div>
+
+    <div class="prosa">
+      <h2 id="floresta">Na floresta e no campo</h2>
+      <ul>
+        <li>Antes de qualquer queima, confirme o risco de incêndio e comunique-a ou peça autorização ao ICNF.</li>
+        <li>Nunca faça fogo nem use máquinas que façam faíscas em dias de risco elevado ou superior.</li>
+        <li>Limpe o terreno à volta da sua casa: a lei exige uma faixa de gestão de combustível de 50 metros.</li>
+        <li>Não deite beatas ou lixo para o chão nem pela janela do carro.</li>
+        <li>Se vir fumo ou fogo, ligue 112 e indique o local com a maior precisão possível.</li>
+      </ul>
+
+      <h2 id="casa">Em casa</h2>
+      <ul>
+        <li>Instale detetores de fumo e mantenha um extintor acessível na cozinha.</li>
+        <li>Não sobrecarregue tomadas e desligue os aparelhos que não estão a ser usados.</li>
+        <li>Mande limpar a chaminé e verificar as instalações de gás regularmente.</li>
+        <li>Combine com a família um plano de saída em caso de incêndio.</li>
+      </ul>
+
+      <h2 id="calor">Calor intenso</h2>
+      <ul>
+        <li>Beba água com frequência, mesmo sem sede.</li>
+        <li>Evite a exposição ao sol entre as 11h e as 17h.</li>
+        <li>Esteja atento a idosos, crianças e pessoas doentes, que são os mais vulneráveis.</li>
+      </ul>
+
+      <h2 id="estrada">Na estrada</h2>
+      <ul>
+        <li>Em caso de acidente, sinalize o local, ligue 112 e não mova as vítimas, salvo perigo imediato.</li>
+        <li>Abra caminho aos veículos de emergência com sirenes e luzes ligadas.</li>
+      </ul>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .ligacao {
+    text-decoration: none;
+    color: var(--tinta);
+    border-top: 4px solid var(--amarelo);
+  }
+
+  .ligacao:hover {
+    box-shadow: var(--sombra);
+    color: var(--tinta);
+  }
+
+  .ligacao h3 {
+    color: var(--vermelho);
+    margin-top: 0;
+  }
+</style>

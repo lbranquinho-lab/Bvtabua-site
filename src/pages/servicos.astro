@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import Provisorio from '../components/Provisorio.astro';
+import { site, telLink } from '../data/site';
+---
+
+<Base title="Serviços" description="Transporte de doentes, socorro, prevenção em eventos e formação prestados pelos Bombeiros Voluntários de Tábua.">
+  <CabecalhoPagina titulo="Serviços" resumo="Para além do socorro, prestamos serviços à população, a instituições e a empresas." />
+
+  <div class="contentor seccao prosa">
+    <div class="destaque">
+      <p><strong>Uma emergência não se marca: ligue 112.</strong> Os serviços desta página são programados.</p>
+    </div>
+
+    <h2 id="transporte-doentes">Transporte de doentes não urgente</h2>
+    <p>
+      Asseguramos o transporte de doentes para consultas, exames, tratamentos (como hemodiálise, fisioterapia ou
+      quimioterapia) e altas hospitalares, em ambulância ou viatura adequada.
+    </p>
+    <h3>Como marcar</h3>
+    <ol>
+      <li>Se o transporte for comparticipado pelo SNS, peça a requisição ao seu médico ou unidade de saúde.</li>
+      <li>Ligue para o quartel, <a href={telLink(site.telefone)}>{site.telefone}</a>, com a maior antecedência possível.</li>
+      <li>Tenha à mão o nome do utente, o número de utente, o local e a hora da consulta.</li>
+    </ol>
+    <Provisorio>Confirmar antecedência mínima, horário de marcação e preçário para transportes particulares.</Provisorio>
+
+    <h2 id="prevencoes">Prevenção em eventos</h2>
+    <p>
+      Disponibilizamos equipas e ambulâncias para festas, provas desportivas, espetáculos e outros eventos. Faça o
+      pedido por escrito com pelo menos 15 dias de antecedência, indicando data, local, horário e número previsto
+      de participantes.
+    </p>
+
+    <h2 id="formacao">Formação</h2>
+    <p>
+      Organizamos ações de formação para empresas, escolas e instituições: suporte básico de vida, primeiros
+      socorros, utilização de extintores e evacuação de edifícios.
+    </p>
+    <Provisorio>Confirmar a oferta de formação disponível.</Provisorio>
+
+    <h2 id="outros">Outros serviços</h2>
+    <ul>
+      <li>Abastecimento de água em situações de necessidade.</li>
+      <li>Limpeza de vias após acidentes.</li>
+      <li>Apoio a simulacros e planos de emergência de empresas e escolas.</li>
+    </ul>
+
+    <p><a class="botao botao-primario" href="/contactos/">Pedir um serviço</a></p>
+  </div>
+</Base>

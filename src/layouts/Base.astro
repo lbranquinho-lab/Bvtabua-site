@@ -1,0 +1,357 @@
+---
+import '../styles/global.css';
+import { site, navegacao, telLink } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.descricao } = Astro.props;
+const tituloCompleto = title ? `${title} | ${site.nome}` : site.nome;
+const caminho = Astro.url.pathname;
+const ano = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={new URL(caminho, Astro.site)} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_PT" />
+    <meta property="og:site_name" content={site.nome} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={description} />
+    <meta name="theme-color" content="#b3121b" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="saltar" href="#conteudo">Saltar para o conteúdo</a>
+
+    <div class="barra-emergencia">
+      <div class="contentor barra-emergencia__interior">
+        <a class="barra-emergencia__112" href={telLink(site.emergencia)}>
+          Emergência: ligue <strong>{site.emergencia}</strong>
+        </a>
+        <a href={telLink(site.telefone)}>Quartel: {site.telefone}</a>
+      </div>
+    </div>
+
+    <header class="cabecalho">
+      <div class="contentor cabecalho__interior">
+        <a class="marca" href="/" aria-label={`${site.nome}, página inicial`}>
+          <img src="/favicon.svg" alt="" width="44" height="44" />
+          <span>
+            <strong>Bombeiros Voluntários</strong>
+            <span>de Tábua</span>
+          </span>
+        </a>
+
+        <div class="menu">
+          <button class="menu__botao" type="button" aria-expanded="false" aria-controls="menu-principal" hidden>Menu</button>
+          <nav id="menu-principal" aria-label="Principal">
+            <ul>
+              {
+                navegacao.map((item) => (
+                  <li>
+                    <a href={item.href} aria-current={caminho.startsWith(item.href) ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <div class="menu__acoes">
+              <a class="botao botao-secundario" href="/ser-bombeiro/">Ser bombeiro</a>
+              <a class="botao botao-primario" href="/apoiar/">Ser sócio / Doar</a>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main id="conteudo">
+      <slot />
+    </main>
+
+    <footer class="rodape">
+      <div class="contentor rodape__grelha">
+        <div>
+          <p class="rodape__nome">{site.associacao}</p>
+          <p>{site.morada}<br />NIF {site.nif}</p>
+          <p>
+            <a href={telLink(site.telefone)}>{site.telefone}</a><br />
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </p>
+        </div>
+        <div>
+          <p class="rodape__titulo">O site</p>
+          <ul>
+            {navegacao.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+            <li><a href="/apoiar/">Ser sócio e apoiar</a></li>
+            <li><a href="/ser-bombeiro/">Ser bombeiro</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="rodape__titulo">Informação legal</p>
+          <ul>
+            <li><a href="/associacao/#transparencia">Transparência</a></li>
+            <li><a href="/privacidade/">Política de privacidade</a></li>
+            <li><a href="/acessibilidade/">Declaração de acessibilidade</a></li>
+            <li><a href="https://www.livroreclamacoes.pt/" rel="noopener">Livro de reclamações</a></li>
+            <li><a href="/contactos/#denuncias">Canal de denúncias</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="rodape__titulo">Siga-nos</p>
+          <ul>
+            <li><a href={site.redes.facebook} rel="noopener">Facebook</a></li>
+            <li><a href={site.redes.instagram} rel="noopener">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="contentor rodape__fim">
+        <p>© {ano} {site.associacao}</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .barra-emergencia {
+    background: var(--vermelho);
+    color: #fff;
+    font-size: 0.95rem;
+  }
+
+  .barra-emergencia__interior {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .barra-emergencia a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .barra-emergencia a:hover {
+    text-decoration: underline;
+  }
+
+  .barra-emergencia__112 strong {
+    background: #fff;
+    color: var(--vermelho);
+    padding: 0 0.4em;
+    border-radius: 4px;
+    margin-left: 0.2em;
+  }
+
+  .cabecalho {
+    border-bottom: 1px solid var(--linha);
+    background: var(--fundo);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .cabecalho__interior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.5rem;
+  }
+
+  .marca {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--tinta);
+    line-height: 1.15;
+  }
+
+  .marca strong {
+    display: block;
+    font-size: 1.05rem;
+  }
+
+  .marca span span {
+    color: var(--vermelho);
+    font-weight: 600;
+  }
+
+  .menu__botao {
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.5rem 0.9rem;
+    background: var(--fundo);
+    color: var(--tinta);
+    border: 2px solid var(--linha);
+    border-radius: var(--raio);
+  }
+
+  .menu nav {
+    padding: 0 0 1rem;
+  }
+
+  .cabecalho__interior {
+    flex-wrap: wrap;
+  }
+
+  :global(.js) .cabecalho__interior {
+    flex-wrap: nowrap;
+  }
+
+  :global(.js) .menu nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--fundo);
+    border-bottom: 1px solid var(--linha);
+    box-shadow: var(--sombra);
+    padding: 0.5rem 1rem 1.25rem;
+  }
+
+  :global(.js) .menu nav:not(.aberto) {
+    display: none;
+  }
+
+  .menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu li a {
+    display: block;
+    padding: 0.65rem 0;
+    color: var(--tinta);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--linha);
+  }
+
+  .menu li a[aria-current='page'] {
+    color: var(--vermelho);
+  }
+
+  .menu__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  @media (min-width: 76rem) {
+    .menu__botao {
+      display: none;
+    }
+
+    .menu nav,
+    :global(.js) .menu nav,
+    :global(.js) .menu nav:not(.aberto) {
+      position: static;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .menu ul {
+      display: flex;
+      gap: 1.1rem;
+    }
+
+    .menu li a {
+      white-space: nowrap;
+      border: 0;
+      padding: 0.25rem 0;
+      font-size: 0.97rem;
+    }
+
+    .menu li a:hover,
+    .menu li a[aria-current='page'] {
+      color: var(--vermelho);
+      box-shadow: inset 0 -2px 0 var(--vermelho);
+    }
+
+    .menu__acoes {
+      margin: 0;
+      flex-wrap: nowrap;
+    }
+
+    .menu__acoes .botao {
+      white-space: nowrap;
+      padding: 0.55em 0.9em;
+      font-size: 0.95rem;
+    }
+  }
+
+  .rodape {
+    background: var(--tinta);
+    color: #d6d3ce;
+    margin-top: 3rem;
+    font-size: 0.95rem;
+  }
+
+  .rodape a {
+    color: #fff;
+  }
+
+  .rodape__grelha {
+    display: grid;
+    gap: 1.5rem 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    padding-top: 2.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .rodape ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .rodape__nome,
+  .rodape__titulo {
+    color: #fff;
+    font-weight: 700;
+    margin-top: 0;
+  }
+
+  .rodape__fim {
+    border-top: 1px solid #3a3d43;
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+    font-size: 0.85rem;
+  }
+</style>
+
+<script>
+  // Menu móvel: sem JavaScript a navegação aparece sempre aberta.
+  const botao = document.querySelector<HTMLButtonElement>('.menu__botao');
+  const nav = document.getElementById('menu-principal');
+  if (botao && nav) {
+    botao.hidden = false;
+    botao.addEventListener('click', () => {
+      const aberto = nav.classList.toggle('aberto');
+      botao.setAttribute('aria-expanded', String(aberto));
+    });
+  }
+</script>

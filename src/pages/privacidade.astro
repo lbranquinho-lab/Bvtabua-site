@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import Provisorio from '../components/Provisorio.astro';
+import { site } from '../data/site';
+---
+
+<Base title="Política de privacidade">
+  <CabecalhoPagina titulo="Política de privacidade" />
+  <div class="contentor seccao prosa">
+    <Provisorio>Texto base, a rever pela Direção antes do lançamento.</Provisorio>
+    <h2>Responsável pelo tratamento</h2>
+    <p>{site.associacao}, NIF {site.nif}, {site.morada}. Contacto: <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+
+    <h2>Que dados recolhemos e para quê</h2>
+    <ul>
+      <li><strong>Formulário de contacto</strong>: nome, email e mensagem, para responder ao seu pedido.</li>
+      <li><strong>Inscrição de sócio</strong>: dados de identificação e contacto, para gerir a sua inscrição e quotas.</li>
+      <li><strong>Candidatura a bombeiro</strong>: dados de identificação e contacto, para avaliar a candidatura.</li>
+    </ul>
+    <p>Os dados são tratados com base no seu consentimento ou na execução da relação com a associação, e não são vendidos nem cedidos a terceiros para fins comerciais.</p>
+
+    <h2>Durante quanto tempo</h2>
+    <p>Pelo tempo necessário à finalidade e ao cumprimento de obrigações legais.</p>
+
+    <h2>Cookies</h2>
+    <p>Este site não usa cookies de publicidade nem de rastreio.</p>
+
+    <h2>Os seus direitos</h2>
+    <p>
+      Pode pedir o acesso, retificação, apagamento ou portabilidade dos seus dados, ou opor-se ao tratamento,
+      escrevendo para <a href={`mailto:${site.email}`}>{site.email}</a>. Pode também apresentar reclamação à
+      Comissão Nacional de Proteção de Dados (<a href="https://www.cnpd.pt/" rel="noopener">cnpd.pt</a>).
+    </p>
+  </div>
+</Base>
