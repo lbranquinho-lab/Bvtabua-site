@@ -5,9 +5,10 @@ import { site, navegacao, telLink } from '../data/site';
 interface Props {
   title?: string;
   description?: string;
+  semIndexar?: boolean;
 }
 
-const { title, description = site.descricao } = Astro.props;
+const { title, description = site.descricao, semIndexar = false } = Astro.props;
 const tituloCompleto = title ? `${title} | ${site.nome}` : site.nome;
 const caminho = Astro.url.pathname;
 const ano = new Date().getFullYear();
@@ -20,6 +21,7 @@ const ano = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{tituloCompleto}</title>
     <meta name="description" content={description} />
+    {semIndexar && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={new URL(caminho, Astro.site)} />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -106,6 +108,7 @@ const ano = new Date().getFullYear();
             <li><a href="/acessibilidade/">Declaração de acessibilidade</a></li>
             <li><a href="https://www.livroreclamacoes.pt/" rel="noopener">Livro de reclamações</a></li>
             <li><a href="/contactos/#denuncias">Canal de denúncias</a></li>
+            <li><a href="/area-reservada/">Área reservada</a></li>
           </ul>
         </div>
         <div>
