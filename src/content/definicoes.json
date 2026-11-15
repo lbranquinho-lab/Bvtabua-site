@@ -3,9 +3,9 @@
   "nomeCurto": "BV Tábua",
   "associacao": "Associação Humanitária dos Bombeiros Voluntários de Tábua",
   "descricao": "Associação Humanitária dos Bombeiros Voluntários de Tábua: socorro, emergência pré-hospitalar e proteção civil no concelho de Tábua desde a sua fundação.",
-  "logotipo": "",
+  "logotipo": "/imagens/LOGO BVT.png",
   "emergencia": "112",
-  "telefone": "235 000 000",
+  "telefone": "235 412 122",
   "email": "geral@bvtabua.pt",
   "morada": "Rua dos Bombeiros Voluntários, 3420-000 Tábua",
   "horarioSecretaria": "Dias úteis, das 9h00 às 12h30 e das 14h00 às 17h30",
@@ -14,7 +14,6 @@
   "mbway": "900 000 000",
   "nif": "500 000 000",
   "quotaAnual": "12 €",
-  "formEndpoint": "",
   "facebook": "https://www.facebook.com/",
   "instagram": "https://www.instagram.com/"
 }
