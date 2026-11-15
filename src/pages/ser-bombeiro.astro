@@ -1,79 +1,31 @@
 ---
 import Base from '../layouts/Base.astro';
 import CabecalhoPagina from '../components/CabecalhoPagina.astro';
-import Provisorio from '../components/Provisorio.astro';
+import Texto from '../components/Texto.astro';
+import { pagina } from '../lib/paginas';
 import Formulario from '../components/Formulario.astro';
+import { html } from '../lib/texto';
 
-const perguntas = [
-  {
-    p: 'Preciso de experiência?',
-    r: 'Não. Toda a formação necessária é dada pela associação e pela Escola Nacional de Bombeiros.',
-  },
-  {
-    p: 'Quanto tempo tenho de dar?',
-    r: 'O voluntariado adapta-se à sua vida. Combinamos escalas e piquetes compatíveis com o seu trabalho ou estudos.',
-  },
-  {
-    p: 'Recebo alguma compensação?',
-    r: 'Os bombeiros voluntários têm seguro, equipamento e acesso a benefícios previstos na lei e definidos pelo município.',
-  },
-  {
-    p: 'Mulheres podem ser bombeiras?',
-    r: 'Claro. O corpo de bombeiros é aberto a todas as pessoas que cumpram os requisitos.',
-  },
-  {
-    p: 'Tenho menos de 17 anos. Posso participar?',
-    r: 'Pode informar-se sobre os cadetes e infantes, que preparam os mais novos para o futuro como bombeiros.',
-  },
-];
+const p = await pagina('ser-bombeiro');
 ---
 
-<Base title="Ser bombeiro" description="Candidate-se a bombeiro voluntário em Tábua: requisitos, formação, perguntas frequentes e candidatura.">
-  <CabecalhoPagina
-    titulo="Seja bombeiro voluntário"
-    resumo="Proteger a sua terra, aprender a salvar vidas e fazer parte de uma equipa unida. Precisamos de si."
-  />
+<Base title="Ser bombeiro" description={p.descricao || undefined}>
+  <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
 
   <div class="contentor seccao prosa">
-    <h2 class="sem-margem">Porquê ser voluntário</h2>
-    <ul>
-      <li>Ajuda pessoas do seu concelho nos momentos mais difíceis.</li>
-      <li>Recebe formação certificada em socorro, combate a incêndios e salvamento.</li>
-      <li>Ganha competências úteis para a vida e para a carreira.</li>
-      <li>Faz parte de uma equipa com espírito de entreajuda.</li>
-    </ul>
+    <div class="primeiro"><Texto md={p.corpo} /></div>
 
-    <h2 id="requisitos">Requisitos</h2>
-    <ul>
-      <li>Ter entre 17 e 45 anos de idade.</li>
-      <li>Ter a escolaridade mínima obrigatória.</li>
-      <li>Ter aptidão física e psíquica, comprovada por exame médico.</li>
-      <li>Residir ou trabalhar perto de Tábua, para poder responder às chamadas.</li>
-    </ul>
-    <Provisorio>Confirmar os requisitos de admissão em vigor no regulamento interno.</Provisorio>
-
-    <h2 id="percurso">O percurso</h2>
-    <ol>
-      <li><strong>Candidatura</strong>: preencha o formulário ou passe pelo quartel.</li>
-      <li><strong>Entrevista e exame médico</strong>: conhecemo-nos e confirmamos a aptidão.</li>
-      <li><strong>Estágio e formação inicial</strong>: módulos teóricos e práticos ao longo de vários meses.</li>
-      <li><strong>Bombeiro</strong>: ingressa no quadro ativo e começa a fazer serviço.</li>
-    </ol>
-
-    <h2 id="testemunhos">Testemunhos</h2>
-    <Provisorio>Duas ou três frases de bombeiros de Tábua, com nome e fotografia, sobre o que os motiva.</Provisorio>
-
-    <h2 id="perguntas">Perguntas frequentes</h2>
+    <h2 id="perguntas">{p.perguntas_titulo || 'Perguntas frequentes'}</h2>
     {
-      perguntas.map((q) => (
+      (p.perguntas ?? []).map((q: any) => (
         <details class="pergunta">
-          <summary>{q.p}</summary>
-          <p>{q.r}</p>
+          <summary>{q.pergunta}</summary>
+          <Fragment set:html={html(q.resposta)} />
         </details>
       ))
     }
 
-    <h2 id="candidatura">Candidatura</h2>
+    <h2 id="candidatura">{p.candidatura_titulo || 'Candidatura'}</h2>
     <Formulario assunto="Candidatura a bombeiro voluntário" botao="Enviar candidatura">
       <label>Nome completo <input name="nome" autocomplete="name" required /></label>
       <label>Data de nascimento <input name="nascimento" type="date" required /></label>
@@ -86,7 +38,7 @@ const perguntas = [
 </Base>
 
 <style>
-  .sem-margem {
+  .primeiro :global(h2:first-child) {
     margin-top: 0;
   }
 
@@ -100,7 +52,7 @@ const perguntas = [
     cursor: pointer;
   }
 
-  .pergunta p {
+  .pergunta :global(p) {
     margin: 0.5rem 0 0;
   }
 </style>

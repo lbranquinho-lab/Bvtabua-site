@@ -1,12 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import Texto from '../components/Texto.astro';
+import { pagina } from '../lib/paginas';
 import Formulario from '../components/Formulario.astro';
 import { site, telLink } from '../data/site';
+
+const p = await pagina('contactos');
+const assuntos: string[] = p.assuntos?.length ? p.assuntos : ['Informação geral', 'Outro'];
 ---
 
-<Base title="Contactos" description="Morada, telefone, email e horário dos Bombeiros Voluntários de Tábua.">
-  <CabecalhoPagina titulo="Contactos" resumo="Em caso de emergência ligue 112. Para tudo o resto, estamos aqui." />
+<Base title={p.titulo} description={p.descricao || undefined}>
+  <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
 
   <div class="contentor seccao">
     <div class="colunas">
@@ -25,19 +30,14 @@ import { site, telLink } from '../data/site';
         </dl>
       </div>
       <div>
-        <h2 class="sem-margem">Envie-nos uma mensagem</h2>
+        <h2 class="sem-margem">{p.formulario_titulo || 'Envie-nos uma mensagem'}</h2>
         <Formulario assunto="Contacto pelo site">
           <label>Nome <input name="nome" autocomplete="name" required /></label>
           <label>Email <input name="email" type="email" autocomplete="email" required /></label>
           <label>
             Assunto
             <select name="assunto">
-              <option>Informação geral</option>
-              <option>Transporte de doentes</option>
-              <option>Prevenção em evento</option>
-              <option>Formação</option>
-              <option>Sócios e donativos</option>
-              <option>Outro</option>
+              {assuntos.map((a) => <option>{a}</option>)}
             </select>
           </label>
           <label>Mensagem <textarea name="mensagem" rows="5" required></textarea></label>
@@ -45,13 +45,8 @@ import { site, telLink } from '../data/site';
       </div>
     </div>
 
-    <div class="prosa">
-      <h2 id="denuncias">Canal de denúncias</h2>
-      <p>
-        Para comunicar, de forma confidencial, irregularidades relacionadas com a associação, escreva para
-        <a href={`mailto:${site.email}?subject=Den%C3%BAncia%20confidencial`}>{site.email}</a> com o assunto
-        «Denúncia confidencial». A comunicação será tratada com sigilo, nos termos da Lei n.º 93/2021.
-      </p>
+    <div class="prosa" id="denuncias">
+      <Texto md={p.corpo} />
     </div>
   </div>
 </Base>

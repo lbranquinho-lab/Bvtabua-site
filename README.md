@@ -24,20 +24,35 @@ cPanel) e não é indexado pelos motores de busca.
 
 ## Antes do lançamento
 
-- Substituir todos os valores marcados com `A CONFIRMAR` em `src/data/site.ts` (telefone, morada, IBAN,
-  MB Way, NIF, quota, redes sociais).
-- Substituir os blocos amarelos «Texto provisório» pelos textos da associação.
+- Substituir os dados provisórios em «Definições gerais» no painel (telefone, morada, IBAN, MB Way, NIF, quota,
+  redes sociais).
+- Substituir os blocos amarelos «Texto provisório» pelos textos da associação, no painel.
 - Colocar logótipo e fotografias em `public/imagens/` e os PDFs de transparência em `public/documentos/`.
 - Opcional: criar uma conta gratuita no [Formspree](https://formspree.io) ou [Web3Forms](https://web3forms.com)
-  e colocar o endereço em `formEndpoint` (`src/data/site.ts`) para os formulários enviarem emails. Sem isso,
+  e colocar o endereço em «Definições gerais → Endereço dos formulários» para os formulários enviarem emails. Sem isso,
   os formulários mostram o email e o telefone.
 
-## Publicar notícias sem programar
+## Painel para editar o site (backend)
 
-Entre em [app.pagescms.org](https://app.pagescms.org) com a conta GitHub, escolha este repositório e use o
-menu «Notícias». Cada notícia guardada é publicada automaticamente em poucos minutos.
+Todo o conteúdo do site edita-se no painel do [Pages CMS](https://app.pagescms.org), sem programar:
 
-Também pode criar um ficheiro `.md` em `src/content/noticias/` diretamente no GitHub.
+| Menu do painel | O que edita | Ficheiro |
+| --- | --- | --- |
+| Notícias | Notícias e eventos, com fotografia | `src/content/noticias/*.md` |
+| Definições gerais | Contactos, IBAN, MB Way, NIF, quota, redes sociais, logótipo | `src/content/definicoes.json` |
+| Página: … | Textos e listas de cada página (cartões, órgãos sociais, frota, perguntas, documentos) | `src/content/paginas/*.md` |
+
+Cada alteração guardada no painel é gravada neste repositório e o site é republicado automaticamente (ver
+«Alojamento»). As fotografias vão para `public/imagens/` e os PDFs para `public/documentos/`.
+
+**Dar acesso a outras pessoas:** no painel, em *Settings → Collaborators*, convide-as pelo email (não precisam de
+conta GitHub). Quem for colaborador do repositório no GitHub também pode entrar com a sua conta.
+
+**Nos textos:** `{{telefone}}`, `{{email}}`, `{{morada}}`, `{{nif}}`, `{{iban}}`, `{{mbway}}`, `{{quota}}`,
+`{{associacao}}`, `{{nome}}`, `{{horario}}` e `{{emergencia}}` são trocados pelos valores das Definições gerais. Uma
+citação que comece por «**Texto provisório.**» aparece como aviso amarelo.
+
+A configuração do painel está em `.pages.yml`. O código que mostra os textos está em `src/lib/texto.ts`.
 
 ## Desenvolvimento
 

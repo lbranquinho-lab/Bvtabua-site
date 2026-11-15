@@ -1,0 +1,12 @@
+---
+// Mostra um texto editado no painel (ver src/lib/texto.ts).
+import { html } from '../lib/texto';
+
+interface Props {
+  md?: string | null;
+}
+
+const { md } = Astro.props;
+---
+
+<Fragment set:html={html(md)} />

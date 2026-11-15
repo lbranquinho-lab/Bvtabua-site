@@ -7,34 +7,46 @@ const repositorio = 'https://github.com/lbranquinho-lab/Bvtabua-site';
 ---
 
 <Base title="Área reservada" description="Acesso reservado à equipa que gere o site." semIndexar>
-  <CabecalhoPagina titulo="Área reservada" resumo="Acesso para a equipa da associação que publica notícias e atualiza o site." />
+  <CabecalhoPagina titulo="Área reservada" resumo="Painel para a equipa da associação editar as páginas, publicar notícias e atualizar os contactos do site." />
 
   <div class="contentor seccao">
     <div class="cartao entrar">
       <h2>Entrar no painel do site</h2>
       <p>
-        O painel abre numa nova página. Entre com a sua conta GitHub autorizada pela associação para publicar
-        notícias, fotografias e documentos.
+        O painel abre numa nova página. Entre com a sua conta GitHub ou com o email para o qual recebeu o convite
+        da associação.
       </p>
       <p>
-        <a class="botao botao-primario" href="https://app.pagescms.org" rel="noopener">Entrar com GitHub</a>
+        <a class="botao botao-primario" href="https://app.pagescms.org" rel="noopener">Entrar no painel</a>
       </p>
       <p class="nota">
-        Ainda não tem acesso? Peça à Direção para o adicionar como colaborador do
-        <a href={repositorio} rel="noopener">repositório do site</a>, ou escreva para
+        Ainda não tem acesso? Peça à Direção um convite para o painel, ou escreva para
         <a href={`mailto:${site.email}?subject=Acesso%20ao%20painel%20do%20site`}>{site.email}</a>.
       </p>
     </div>
 
     <div class="prosa">
-      <h2>Como publicar uma notícia</h2>
+      <h2>O que pode editar</h2>
+      <ul>
+        <li><strong>Notícias</strong>: criar, editar e apagar notícias, com fotografia.</li>
+        <li><strong>Definições gerais</strong>: telefone, email, morada, horário, IBAN, MB Way, NIF, quota, redes sociais e logótipo. Mudam em todo o site de uma vez.</li>
+        <li><strong>Páginas</strong>: os textos de cada página, os cartões da página inicial, os órgãos sociais, a frota, as perguntas frequentes e os documentos de transparência (PDF).</li>
+      </ul>
+
+      <h2>Como publicar uma alteração</h2>
       <ol>
-        <li>Carregue em «Entrar com GitHub» e escolha o repositório <strong>Bvtabua-site</strong>.</li>
-        <li>No menu, abra <strong>Notícias</strong> e carregue em <strong>Add an entry</strong>.</li>
-        <li>Preencha o título, a data, o resumo e o texto, e junte uma fotografia se quiser.</li>
-        <li>Carregue em <strong>Save</strong>. A notícia aparece no site em 2 a 3 minutos.</li>
+        <li>Carregue em «Entrar no painel» e escolha o repositório <strong>{repositorio.split('/').pop()}</strong>.</li>
+        <li>No menu à esquerda, abra o que quer mudar: uma página, as definições ou as notícias.</li>
+        <li>Para uma notícia nova, abra <strong>Notícias</strong> e carregue em <strong>Add an entry</strong>.</li>
+        <li>Carregue em <strong>Save</strong>. A alteração aparece no site em 2 a 3 minutos.</li>
       </ol>
-      <p>Para guardar sem publicar, marque «Rascunho».</p>
+
+      <h2>Dicas para os textos</h2>
+      <ul>
+        <li>Escreva <code>{'{{telefone}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{morada}}'}</code>, <code>{'{{nif}}'}</code>, <code>{'{{iban}}'}</code>, <code>{'{{mbway}}'}</code> ou <code>{'{{quota}}'}</code> para mostrar o valor das Definições gerais. Assim, se o número mudar, muda em todo o lado.</li>
+        <li>Uma citação que comece por «<strong>Texto provisório.</strong>» aparece como aviso amarelo. Apague-a quando tiver o texto final.</li>
+        <li>Para guardar uma notícia sem a publicar, marque «Rascunho».</li>
+      </ul>
     </div>
   </div>
 </Base>

@@ -2,6 +2,10 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { site, telLink } from '../data/site';
+import { pagina } from '../lib/paginas';
+import { linha } from '../lib/texto';
+
+const p = await pagina('inicio');
 
 const noticias = (await getCollection('noticias', ({ data }) => !data.rascunho))
   .sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf())
@@ -11,24 +15,21 @@ const formatarData = (d: Date) =>
   d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
-<Base>
+<Base description={p.descricao || undefined}>
   <section class="heroi">
     <div class="contentor heroi__interior">
       <div>
-        <p class="heroi__pre">Concelho de Tábua · Distrito de Coimbra</p>
-        <h1>Prontos para socorrer, todos os dias do ano.</h1>
-        <p class="heroi__texto">
-          Somos os bombeiros voluntários do concelho de Tábua. Combatemos incêndios, prestamos socorro e
-          emergência pré-hospitalar e transportamos doentes. Contamos com a comunidade para continuar.
-        </p>
+        {p.heroi_pre && <p class="heroi__pre">{p.heroi_pre}</p>}
+        <h1 set:html={linha(p.heroi_titulo)} />
+        <p class="heroi__texto" set:html={linha(p.heroi_texto)} />
         <div class="heroi__acoes">
-          <a class="botao botao-claro" href="/apoiar/">Ser sócio ou doar</a>
-          <a class="botao botao-contorno" href="/ser-bombeiro/">Quero ser bombeiro</a>
+          <a class="botao botao-claro" href="/apoiar/">{p.heroi_botao1 || 'Ser sócio ou doar'}</a>
+          <a class="botao botao-contorno" href="/ser-bombeiro/">{p.heroi_botao2 || 'Quero ser bombeiro'}</a>
         </div>
       </div>
       <a class="cartao-112" href={telLink(site.emergencia)}>
         <span>Em caso de emergência</span>
-        <strong>112</strong>
+        <strong>{site.emergencia}</strong>
         <span>Chamada gratuita, 24 horas</span>
       </a>
     </div>
@@ -36,47 +37,33 @@ const formatarData = (d: Date) =>
 
   <section class="seccao">
     <div class="contentor">
-      <h2 class="sem-margem">Como pode ajudar</h2>
+      <h2 class="sem-margem">{p.ajudar_titulo}</h2>
       <div class="grelha">
-        <a class="cartao cartao-acao" href="/apoiar/#socio">
-          <h3>Torne-se sócio</h3>
-          <p>Por {site.quotaAnual} por ano ajuda a manter viaturas, equipamento e formação.</p>
-          <span aria-hidden="true">Saber mais →</span>
-        </a>
-        <a class="cartao cartao-acao" href="/apoiar/#donativos">
-          <h3>Faça um donativo</h3>
-          <p>Por MB Way ou transferência bancária, em poucos segundos.</p>
-          <span aria-hidden="true">Doar →</span>
-        </a>
-        <a class="cartao cartao-acao" href="/ser-bombeiro/">
-          <h3>Seja bombeiro voluntário</h3>
-          <p>Formação completa, espírito de equipa e a oportunidade de servir a sua terra.</p>
-          <span aria-hidden="true">Candidatar-me →</span>
-        </a>
+        {
+          (p.ajudar ?? []).map((c: any) => (
+            <a class="cartao cartao-acao" href={c.ligacao}>
+              <h3>{c.titulo}</h3>
+              <p set:html={linha(c.texto)} />
+              {c.chamada && <span aria-hidden="true">{c.chamada} →</span>}
+            </a>
+          ))
+        }
       </div>
     </div>
   </section>
 
   <section class="seccao seccao-alt">
     <div class="contentor">
-      <h2 class="sem-margem">O que fazemos</h2>
+      <h2 class="sem-margem">{p.fazemos_titulo}</h2>
       <div class="grelha">
-        <div class="cartao">
-          <h3>Combate a incêndios</h3>
-          <p>Incêndios urbanos, industriais e rurais no concelho e em reforço de outros concelhos.</p>
-        </div>
-        <div class="cartao">
-          <h3>Emergência pré-hospitalar</h3>
-          <p>Socorro a vítimas de doença súbita e acidentes, em articulação com o INEM.</p>
-        </div>
-        <div class="cartao">
-          <h3>Transporte de doentes</h3>
-          <p>Transporte não urgente para consultas, tratamentos e altas hospitalares.</p>
-        </div>
-        <div class="cartao">
-          <h3>Proteção civil</h3>
-          <p>Acidentes rodoviários, cheias, salvamentos e apoio à população.</p>
-        </div>
+        {
+          (p.fazemos ?? []).map((c: any) => (
+            <div class="cartao">
+              <h3>{c.titulo}</h3>
+              <p set:html={linha(c.texto)} />
+            </div>
+          ))
+        }
       </div>
       <p><a href="/servicos/">Ver todos os serviços →</a></p>
     </div>
@@ -86,7 +73,7 @@ const formatarData = (d: Date) =>
     <div class="contentor">
       <div class="grelha-2">
         <div>
-          <h2 class="sem-margem">Últimas notícias</h2>
+          <h2 class="sem-margem">{p.noticias_titulo}</h2>
           <ul class="lista-noticias">
             {
               noticias.map((n) => (
@@ -100,11 +87,8 @@ const formatarData = (d: Date) =>
           <p><a href="/noticias/">Todas as notícias →</a></p>
         </div>
         <div class="cartao risco">
-          <h2 class="sem-margem">Risco de incêndio hoje</h2>
-          <p>
-            Consulte o risco de incêndio rural para o concelho de Tábua antes de fazer queimas, queimadas ou
-            trabalhos com máquinas no campo.
-          </p>
+          <h2 class="sem-margem">{p.risco_titulo}</h2>
+          <p set:html={linha(p.risco_texto)} />
           <p>
             <a class="botao botao-secundario" href="https://www.ipma.pt/pt/riscoincendio/rcm.pt/" rel="noopener">
               Ver risco no IPMA
