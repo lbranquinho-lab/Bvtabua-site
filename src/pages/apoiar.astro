@@ -35,12 +35,24 @@ const p = await pagina('apoiar');
         <h2 class="sem-margem">{p.donativos_titulo || 'Faça um donativo'}</h2>
         <Texto md={p.donativos_texto} />
 
-        <h3>MB Way</h3>
-        <Copiar rotulo="Número MB Way" valor={site.mbway} />
+        {
+          site.mbway && (
+            <>
+              <h3>MB Way</h3>
+              <Copiar rotulo="Número MB Way" valor={site.mbway} />
+            </>
+          )
+        }
 
-        <h3>Transferência bancária</h3>
-        <Copiar rotulo="IBAN" valor={site.iban} />
-        <p class="nota">Titular: {site.associacao}</p>
+        {
+          site.iban && (
+            <>
+              <h3>Transferência bancária</h3>
+              <Copiar rotulo="IBAN" valor={site.iban} />
+              <p class="nota">Titular: {site.associacao}</p>
+            </>
+          )
+        }
 
         <h3>Recibo</h3>
         <Texto md={p.recibo_texto} />
