@@ -1,10 +1,24 @@
-# Configuração do Pages CMS (https://pagescms.org): permite publicar notícias
-# e editar os dados da associação num painel, sem mexer em código.
+# Configuração do Pages CMS (https://pagescms.org): o painel para editar todo o site sem mexer em código.
+# Cada alteração guardada no painel é gravada no GitHub e o site é republicado automaticamente.
+#
+# Nos textos pode escrever {{telefone}}, {{email}}, {{morada}}, {{nif}}, {{iban}}, {{mbway}}, {{quota}},
+# {{associacao}}, {{nome}}, {{horario}} ou {{emergencia}}: são trocados pelos valores das «Definições gerais».
+# Uma citação que comece por «Texto provisório.» aparece como aviso amarelo.
+
 media:
-  input: public/imagens
-  output: /imagens
+  - name: imagens
+    label: Imagens
+    input: public/imagens
+    output: /imagens
+    categories: [image]
+  - name: documentos
+    label: Documentos
+    input: public/documentos
+    output: /documentos
+    categories: [document]
 
 content:
+  # --- Notícias -------------------------------------------------------------
   - name: noticias
     label: Notícias
     type: collection
@@ -20,6 +34,227 @@ content:
       - { name: titulo, label: Título, type: string, required: true }
       - { name: data, label: Data, type: date, required: true }
       - { name: resumo, label: Resumo, type: text, required: true }
-      - { name: imagem, label: Imagem, type: image }
+      - { name: imagem, label: Imagem, type: image, options: { media: imagens } }
       - { name: rascunho, label: Rascunho (não publicar), type: boolean, default: false }
       - { name: body, label: Texto, type: rich-text }
+
+  # --- Dados da associação ----------------------------------------------------
+  - name: definicoes
+    label: Definições gerais
+    description: Contactos, dados de pagamento e redes sociais, usados em todo o site.
+    type: file
+    path: src/content/definicoes.json
+    fields:
+      - { name: nome, label: Nome do site, type: string, required: true }
+      - { name: nomeCurto, label: Nome curto, type: string }
+      - { name: associacao, label: Nome completo da associação, type: string, required: true }
+      - { name: descricao, label: Descrição do site (Google), type: text }
+      - { name: logotipo, label: Logótipo (quadrado), type: image, options: { media: imagens } }
+      - { name: emergencia, label: Número de emergência, type: string }
+      - { name: telefone, label: Telefone do quartel, type: string }
+      - { name: email, label: Email geral, type: string }
+      - { name: morada, label: Morada, type: string }
+      - { name: horarioSecretaria, label: Horário da secretaria, type: string }
+      - { name: mapaUrl, label: Ligação para o mapa, type: string }
+      - { name: iban, label: IBAN, type: string }
+      - { name: mbway, label: Número MB Way, type: string }
+      - { name: nif, label: NIF, type: string }
+      - { name: quotaAnual, label: Quota anual de sócio, type: string, description: 'Ex.: 12 €' }
+      - name: formEndpoint
+        label: Endereço dos formulários (Formspree ou Web3Forms)
+        description: Vazio, os formulários mostram o email e o telefone.
+        type: string
+      - { name: facebook, label: Página de Facebook, type: string }
+      - { name: instagram, label: Página de Instagram, type: string }
+
+  # --- Páginas ------------------------------------------------------------------
+  - name: inicio
+    label: 'Página: Início'
+    type: file
+    path: src/content/paginas/inicio.md
+    fields:
+      - { name: titulo, label: Nome interno, type: string, default: Início }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: heroi_pre, label: Faixa de topo (texto pequeno), type: string }
+      - { name: heroi_titulo, label: Título principal, type: string }
+      - { name: heroi_texto, label: Texto de apresentação, type: text }
+      - { name: heroi_botao1, label: Botão «Ser sócio ou doar», type: string }
+      - { name: heroi_botao2, label: Botão «Ser bombeiro», type: string }
+      - { name: ajudar_titulo, label: Título «Como pode ajudar», type: string }
+      - name: ajudar
+        label: Cartões «Como pode ajudar»
+        type: object
+        list: true
+        fields:
+          - { name: titulo, label: Título, type: string }
+          - { name: texto, label: Texto, type: text }
+          - { name: ligacao, label: Ligação, type: string, description: 'Ex.: /apoiar/#socio' }
+          - { name: chamada, label: Texto da ligação, type: string }
+      - { name: fazemos_titulo, label: Título «O que fazemos», type: string }
+      - name: fazemos
+        label: Cartões «O que fazemos»
+        type: object
+        list: true
+        fields:
+          - { name: titulo, label: Título, type: string }
+          - { name: texto, label: Texto, type: text }
+      - { name: noticias_titulo, label: Título das notícias, type: string }
+      - { name: risco_titulo, label: Título do risco de incêndio, type: string }
+      - { name: risco_texto, label: Texto do risco de incêndio, type: text }
+
+  - name: associacao
+    label: 'Página: A Associação'
+    type: file
+    path: src/content/paginas/associacao.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: body, label: 'História e mensagem do Presidente', type: rich-text }
+      - { name: orgaos_titulo, label: Título dos órgãos sociais, type: string }
+      - { name: orgaos_texto, label: Texto antes dos órgãos sociais, type: rich-text }
+      - name: orgaos
+        label: Órgãos sociais
+        type: object
+        list: true
+        fields:
+          - { name: nome, label: Órgão, type: string }
+          - { name: membros, label: Membros e cargos, type: text }
+      - { name: memoria, label: Em memória, type: rich-text }
+      - { name: transparencia_texto, label: Texto da transparência, type: rich-text }
+      - name: documentos
+        label: Documentos de transparência (PDF)
+        type: object
+        list: true
+        fields:
+          - { name: ano, label: Ano, type: string }
+          - { name: titulo, label: Título, type: string }
+          - { name: ficheiro, label: Ficheiro, type: file, options: { media: documentos } }
+
+  - name: corpo-de-bombeiros
+    label: 'Página: Corpo de Bombeiros'
+    type: file
+    path: src/content/paginas/corpo-de-bombeiros.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: body, label: 'Comandante, comando, efetivo e missões', type: rich-text }
+      - { name: frota_titulo, label: Título da frota, type: string }
+      - { name: frota_texto, label: Texto antes da frota, type: rich-text }
+      - name: frota
+        label: Viaturas
+        type: object
+        list: true
+        fields:
+          - { name: sigla, label: Sigla, type: string }
+          - { name: nome, label: Designação, type: string }
+          - { name: funcao, label: Função, type: string }
+          - { name: foto, label: Fotografia, type: image, options: { media: imagens } }
+      - { name: quartel, label: O quartel, type: rich-text }
+
+  - name: servicos
+    label: 'Página: Serviços'
+    type: file
+    path: src/content/paginas/servicos.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: destaque, label: Aviso no topo, type: text }
+      - { name: body, label: Texto da página, type: rich-text }
+      - { name: botao, label: Texto do botão final, type: string }
+
+  - name: apoiar
+    label: 'Página: Ser sócio e apoiar'
+    type: file
+    path: src/content/paginas/apoiar.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: socio_titulo, label: Título «Torne-se sócio», type: string }
+      - { name: socio_texto, label: Vantagens de ser sócio, type: rich-text, description: 'O valor da quota muda-se nas Definições gerais.' }
+      - { name: donativos_titulo, label: Título dos donativos, type: string }
+      - { name: donativos_texto, label: Texto dos donativos, type: rich-text, description: 'O MB Way e o IBAN mudam-se nas Definições gerais.' }
+      - { name: recibo_texto, label: Texto do recibo, type: rich-text }
+      - { name: body, label: Empresas e mecenato, type: rich-text }
+
+  - name: ser-bombeiro
+    label: 'Página: Ser bombeiro'
+    type: file
+    path: src/content/paginas/ser-bombeiro.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: body, label: 'Porquê, requisitos, percurso e testemunhos', type: rich-text }
+      - { name: perguntas_titulo, label: Título das perguntas, type: string }
+      - name: perguntas
+        label: Perguntas frequentes
+        type: object
+        list: true
+        fields:
+          - { name: pergunta, label: Pergunta, type: string }
+          - { name: resposta, label: Resposta, type: text }
+      - { name: candidatura_titulo, label: Título da candidatura, type: string }
+
+  - name: prevencao
+    label: 'Página: Prevenção'
+    type: file
+    path: src/content/paginas/prevencao.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - name: ligacoes
+        label: Cartões de ligações úteis
+        type: object
+        list: true
+        fields:
+          - { name: titulo, label: Título, type: string }
+          - { name: texto, label: Texto, type: text }
+          - { name: url, label: Endereço, type: string }
+      - { name: body, label: Conselhos, type: rich-text }
+
+  - name: noticias-pagina
+    label: 'Página: Notícias (lista)'
+    type: file
+    path: src/content/paginas/noticias.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: body, label: Texto no fim da lista, type: rich-text }
+
+  - name: contactos
+    label: 'Página: Contactos'
+    type: file
+    path: src/content/paginas/contactos.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: formulario_titulo, label: Título do formulário, type: string }
+      - { name: assuntos, label: Assuntos do formulário, type: string, list: true }
+      - { name: body, label: Canal de denúncias, type: rich-text, description: 'Os contactos mudam-se nas Definições gerais.' }
+
+  - name: privacidade
+    label: 'Página: Política de privacidade'
+    type: file
+    path: src/content/paginas/privacidade.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: body, label: Texto da página, type: rich-text }
+
+  - name: acessibilidade
+    label: 'Página: Acessibilidade'
+    type: file
+    path: src/content/paginas/acessibilidade.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: body, label: Texto da página, type: rich-text }

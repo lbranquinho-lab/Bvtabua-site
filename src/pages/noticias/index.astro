@@ -2,6 +2,10 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import CabecalhoPagina from '../../components/CabecalhoPagina.astro';
+import Texto from '../../components/Texto.astro';
+import { pagina } from '../../lib/paginas';
+
+const p = await pagina('noticias');
 
 const noticias = (await getCollection('noticias', ({ data }) => !data.rascunho)).sort(
   (a, b) => b.data.data.valueOf() - a.data.data.valueOf(),
@@ -11,8 +15,8 @@ const formatarData = (d: Date) =>
   d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
-<Base title="Notícias e eventos" description="Notícias, eventos e atividades dos Bombeiros Voluntários de Tábua.">
-  <CabecalhoPagina titulo="Notícias e eventos" resumo="O que se passa no quartel e no concelho." />
+<Base title={p.titulo} description={p.descricao || undefined}>
+  <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
 
   <div class="contentor seccao">
     <div class="grelha">
@@ -29,7 +33,7 @@ const formatarData = (d: Date) =>
         ))
       }
     </div>
-    <p class="redes">Acompanhe também o dia a dia do quartel no Facebook e no Instagram.</p>
+    <div class="redes"><Texto md={p.corpo} /></div>
   </div>
 </Base>
 

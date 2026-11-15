@@ -48,7 +48,7 @@ const ano = new Date().getFullYear();
     <header class="cabecalho">
       <div class="contentor cabecalho__interior">
         <a class="marca" href="/" aria-label={`${site.nome}, página inicial`}>
-          <img src="/favicon.svg" alt="" width="44" height="44" />
+          <img src={site.logotipo || '/favicon.svg'} alt="" width="44" height="44" />
           <span>
             <strong>Bombeiros Voluntários</strong>
             <span>de Tábua</span>

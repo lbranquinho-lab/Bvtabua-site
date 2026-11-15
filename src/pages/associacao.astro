@@ -1,57 +1,37 @@
 ---
 import Base from '../layouts/Base.astro';
 import CabecalhoPagina from '../components/CabecalhoPagina.astro';
-import Provisorio from '../components/Provisorio.astro';
-import { site } from '../data/site';
+import Texto from '../components/Texto.astro';
+import { pagina } from '../lib/paginas';
+import { linha } from '../lib/texto';
 
-// Documentos de transparência: colocar os PDFs em public/documentos/ e acrescentar aqui.
-const documentos: { ano: number; titulo: string; ficheiro: string }[] = [];
+const p = await pagina('associacao');
+const documentos: { ano?: number | string; titulo: string; ficheiro: string }[] = p.documentos ?? [];
 ---
 
-<Base title="A Associação" description={`História, órgãos sociais e transparência da ${site.associacao}.`}>
-  <CabecalhoPagina
-    titulo="A Associação"
-    resumo="Uma associação humanitária sem fins lucrativos, sustentada pelos sócios, pela comunidade e pelo trabalho voluntário."
-  />
+<Base title={p.titulo} description={p.descricao || undefined}>
+  <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
 
   <div class="contentor seccao prosa">
-    <h2 id="historia">A nossa história</h2>
-    <Provisorio>Substituir pela história da associação: data de fundação, fundadores, marcos e evolução do quartel.</Provisorio>
-    <p>
-      A {site.associacao} nasceu da vontade da população de Tábua de ter um corpo de bombeiros próprio, capaz de
-      responder aos incêndios e às emergências do concelho. Desde então, gerações de voluntários deram o seu tempo
-      para proteger pessoas e bens.
-    </p>
+    <Texto md={p.corpo} />
 
-    <h2 id="presidente">Mensagem do Presidente da Direção</h2>
-    <Provisorio>Texto e fotografia do Presidente da Direção.</Provisorio>
-
-    <h2 id="orgaos-sociais">Órgãos sociais</h2>
-    <Provisorio>Nomes e cargos para o mandato em curso.</Provisorio>
+    <h2 id="orgaos-sociais">{p.orgaos_titulo || 'Órgãos sociais'}</h2>
+    <Texto md={p.orgaos_texto} />
     <div class="grelha">
-      <div class="cartao">
-        <h3>Assembleia Geral</h3>
-        <p>Presidente, Vice-Presidente e Secretários.</p>
-      </div>
-      <div class="cartao">
-        <h3>Direção</h3>
-        <p>Presidente, Vice-Presidentes, Secretário, Tesoureiro e Vogais.</p>
-      </div>
-      <div class="cartao">
-        <h3>Conselho Fiscal</h3>
-        <p>Presidente, Relator e Vogal.</p>
-      </div>
+      {
+        (p.orgaos ?? []).map((o: any) => (
+          <div class="cartao">
+            <h3>{o.nome}</h3>
+            <p set:html={linha(o.membros)} />
+          </div>
+        ))
+      }
     </div>
 
-    <h2 id="memoria">Em memória</h2>
-    <p>
-      Honramos os bombeiros da nossa associação que perderam a vida ao serviço da comunidade. O seu exemplo
-      continua a guiar quem hoje veste a farda.
-    </p>
-    <Provisorio>Nomes e homenagem, se a associação assim o entender.</Provisorio>
+    <div id="memoria"><Texto md={p.memoria} /></div>
 
     <h2 id="transparencia">Transparência</h2>
-    <p>Publicamos os estatutos e os documentos de prestação de contas aprovados em Assembleia Geral.</p>
+    <Texto md={p.transparencia_texto} />
     {
       documentos.length > 0 ? (
         <table>
@@ -66,14 +46,14 @@ const documentos: { ano: number; titulo: string; ficheiro: string }[] = [];
               <tr>
                 <td>{d.ano}</td>
                 <td>
-                  <a href={`/documentos/${d.ficheiro}`}>{d.titulo}</a> (PDF)
+                  <a href={d.ficheiro}>{d.titulo}</a>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <Provisorio>Enviar em PDF: estatutos, relatório e contas e plano de atividades e orçamento dos últimos anos.</Provisorio>
+        <p class="provisorio"><strong>Texto provisório.</strong> Enviar em PDF: estatutos, relatório e contas e plano de atividades e orçamento dos últimos anos.</p>
       )
     }
   </div>

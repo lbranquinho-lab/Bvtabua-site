@@ -1,68 +1,37 @@
 ---
 import Base from '../layouts/Base.astro';
 import CabecalhoPagina from '../components/CabecalhoPagina.astro';
-import Provisorio from '../components/Provisorio.astro';
+import Texto from '../components/Texto.astro';
+import { pagina } from '../lib/paginas';
 
-// Frota: substituir pelas viaturas reais (sigla, designação e função).
-const frota = [
-  { tipo: 'VUCI', nome: 'Veículo Urbano de Combate a Incêndios', funcao: 'Incêndios urbanos e industriais.' },
-  { tipo: 'VFCI', nome: 'Veículo Florestal de Combate a Incêndios', funcao: 'Incêndios rurais e florestais.' },
-  { tipo: 'VTTU', nome: 'Veículo Tanque Tático Urbano', funcao: 'Abastecimento de água às operações.' },
-  { tipo: 'ABSC', nome: 'Ambulância de Socorro', funcao: 'Emergência pré-hospitalar.' },
-  { tipo: 'ABTD', nome: 'Ambulância de Transporte de Doentes', funcao: 'Transporte não urgente.' },
-  { tipo: 'VSAT', nome: 'Veículo de Socorro e Assistência Tático', funcao: 'Desencarceramento e salvamento.' },
-];
+const p = await pagina('corpo-de-bombeiros');
 ---
 
-<Base title="Corpo de Bombeiros" description="Comando, efetivo, missões e frota do Corpo de Bombeiros Voluntários de Tábua.">
-  <CabecalhoPagina
-    titulo="Corpo de Bombeiros"
-    resumo="Homens e mulheres voluntários e profissionais, preparados para responder a qualquer hora."
-  />
+<Base title={p.titulo} description={p.descricao || undefined}>
+  <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
 
   <div class="contentor seccao">
     <div class="prosa">
-      <h2 id="comandante">Mensagem do Comandante</h2>
-      <Provisorio>Texto e fotografia do Comandante.</Provisorio>
-
-      <h2 id="comando">Estrutura de comando</h2>
-      <Provisorio>Comandante, 2.º Comandante e Adjuntos de Comando.</Provisorio>
-
-      <h2 id="efetivo">O nosso efetivo</h2>
-      <p>
-        O Corpo de Bombeiros integra bombeiros voluntários e elementos da Equipa de Intervenção Permanente, com
-        formação certificada pela Escola Nacional de Bombeiros.
-      </p>
-      <Provisorio>Número de bombeiros por categoria, se houver informação atualizada.</Provisorio>
-
-      <h2 id="missoes">Missões</h2>
-      <ul>
-        <li>Prevenção e combate a incêndios urbanos, industriais e rurais.</li>
-        <li>Socorro e emergência pré-hospitalar.</li>
-        <li>Socorro em acidentes rodoviários, desencarceramento e salvamentos.</li>
-        <li>Socorro em cheias, inundações e outros acidentes graves.</li>
-        <li>Transporte de doentes.</li>
-        <li>Ações de sensibilização e formação da população.</li>
-      </ul>
+      <Texto md={p.corpo} />
     </div>
 
-    <h2 id="frota">Frota</h2>
-    <Provisorio>Lista de exemplo. Substituir pelas viaturas reais, com fotografia de cada uma.</Provisorio>
+    <h2 id="frota">{p.frota_titulo || 'Frota'}</h2>
+    <Texto md={p.frota_texto} />
     <div class="grelha">
       {
-        frota.map((v) => (
+        (p.frota ?? []).map((v: any) => (
           <div class="cartao">
-            <p class="sigla">{v.tipo}</p>
+            {v.foto && <img class="foto" src={v.foto} alt={v.nome} loading="lazy" />}
+            {v.sigla && <p class="sigla">{v.sigla}</p>}
             <h3>{v.nome}</h3>
-            <p>{v.funcao}</p>
+            {v.funcao && <p>{v.funcao}</p>}
           </div>
         ))
       }
     </div>
 
-    <div class="prosa">
-      <h2 id="quartel">O quartel</h2>
-      <Provisorio>Descrição e fotografias do quartel.</Provisorio>
+    <div class="prosa" id="quartel">
+      <Texto md={p.quartel} />
     </div>
   </div>
 </Base>
@@ -77,6 +46,14 @@ const frota = [
     font-size: 0.85rem;
     padding: 0.15em 0.6em;
     border-radius: 6px;
+  }
+
+  .foto {
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    width: 100%;
   }
 
   .cartao h3 {

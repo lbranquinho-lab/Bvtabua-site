@@ -1,30 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
 import CabecalhoPagina from '../components/CabecalhoPagina.astro';
-import Provisorio from '../components/Provisorio.astro';
+import Texto from '../components/Texto.astro';
+import { pagina } from '../lib/paginas';
 import Copiar from '../components/Copiar.astro';
 import Formulario from '../components/Formulario.astro';
 import { site } from '../data/site';
+
+const p = await pagina('apoiar');
 ---
 
-<Base title="Ser sócio e apoiar" description="Torne-se sócio ou faça um donativo aos Bombeiros Voluntários de Tábua por MB Way ou transferência bancária.">
-  <CabecalhoPagina
-    titulo="Ser sócio e apoiar"
-    resumo="Os bombeiros voluntários existem porque a comunidade os sustenta. Cada quota e cada donativo conta."
-  />
+<Base title={p.titulo} description={p.descricao || undefined}>
+  <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
 
   <div class="contentor seccao">
     <div class="duas-colunas">
       <section id="socio">
-        <h2 class="sem-margem">Torne-se sócio</h2>
+        <h2 class="sem-margem">{p.socio_titulo || 'Torne-se sócio'}</h2>
         <p class="preco">{site.quotaAnual} <span>por ano</span></p>
-        <p>Como sócio:</p>
-        <ul>
-          <li>Ajuda a manter viaturas, equipamento de proteção e formação dos bombeiros.</li>
-          <li>Participa e vota na Assembleia Geral da associação.</li>
-          <li>Tem acesso às condições definidas pela associação para sócios.</li>
-        </ul>
-        <Provisorio>Confirmar valor da quota e benefícios concretos (por exemplo, condições no transporte de doentes).</Provisorio>
+        <Texto md={p.socio_texto} />
 
         <h3>Pedido de inscrição</h3>
         <Formulario assunto="Inscrição de sócio" botao="Enviar inscrição">
@@ -38,8 +32,8 @@ import { site } from '../data/site';
       </section>
 
       <section id="donativos" class="cartao donativos">
-        <h2 class="sem-margem">Faça um donativo</h2>
-        <p>Qualquer valor ajuda. Os donativos são aplicados em equipamento, viaturas e formação.</p>
+        <h2 class="sem-margem">{p.donativos_titulo || 'Faça um donativo'}</h2>
+        <Texto md={p.donativos_texto} />
 
         <h3>MB Way</h3>
         <Copiar rotulo="Número MB Way" valor={site.mbway} />
@@ -49,20 +43,12 @@ import { site } from '../data/site';
         <p class="nota">Titular: {site.associacao}</p>
 
         <h3>Recibo</h3>
-        <p>
-          Se precisar de recibo para efeitos fiscais, envie o comprovativo e o seu NIF para
-          <a href={`mailto:${site.email}?subject=Recibo%20de%20donativo`}>{site.email}</a>.
-        </p>
+        <Texto md={p.recibo_texto} />
       </section>
     </div>
 
-    <div class="prosa">
-      <h2 id="empresas">Empresas e mecenato</h2>
-      <p>
-        As empresas podem apoiar a associação através de donativos em dinheiro ou em espécie, patrocínio de
-        equipamento ou viaturas, e beneficiar do regime do mecenato previsto no Estatuto dos Benefícios Fiscais.
-      </p>
-      <Provisorio>Confirmar o enquadramento fiscal da associação e acrescentar a lista de parceiros.</Provisorio>
+    <div class="prosa" id="empresas">
+      <Texto md={p.corpo} />
       <p><a class="botao botao-secundario" href="/contactos/">Falar connosco</a></p>
     </div>
   </div>
