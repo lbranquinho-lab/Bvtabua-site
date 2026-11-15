@@ -4,7 +4,8 @@ interface Props {
   valor: string;
 }
 
-const { rotulo, valor } = Astro.props;
+const { rotulo } = Astro.props;
+const valor = Astro.props.valor ?? '';
 ---
 
 <div class="copiar">
