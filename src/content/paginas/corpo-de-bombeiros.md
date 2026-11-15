@@ -1,10 +1,13 @@
 ---
 titulo: Corpo de Bombeiros
-resumo: Homens e mulheres voluntários e profissionais, preparados para responder a qualquer hora.
+resumo: Homens e mulheres voluntários e profissionais, preparados para responder
+  a qualquer hora.
 descricao: Comando, efetivo, missões e frota do Corpo de Bombeiros Voluntários de Tábua.
 frota_titulo: Frota
-frota_texto: |
-  > **Texto provisório.** Lista de exemplo. Substituir pelas viaturas reais, com fotografia de cada uma.
+frota_texto: >+
+  > **Texto provisório.** Lista de exemplo. Substituir pelas viaturas reais, com
+  fotografia de cada uma.
+
 frota:
   - sigla: VUCI
     nome: Veículo Urbano de Combate a Incêndios
@@ -24,12 +27,11 @@ frota:
   - sigla: VSAT
     nome: Veículo de Socorro e Assistência Tático
     funcao: Desencarceramento e salvamento.
-quartel: |
+quartel: |+
   ## O quartel
 
   > **Texto provisório.** Descrição e fotografias do quartel.
 ---
-
 ## Mensagem do Comandante
 
 > **Texto provisório.** Texto e fotografia do Comandante.
@@ -52,3 +54,4 @@ O Corpo de Bombeiros integra bombeiros voluntários e elementos da Equipa de Int
 - Socorro em cheias, inundações e outros acidentes graves.
 - Transporte de doentes.
 - Ações de sensibilização e formação da população.
+
