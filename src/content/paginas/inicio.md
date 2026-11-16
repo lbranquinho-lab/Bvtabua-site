@@ -2,19 +2,11 @@
 titulo: Início
 heroi_pre: Concelho de Tábua · Distrito de Coimbra
 heroi_titulo: Sempre presentes. Sempre por si.
-heroi_texto: >-
-  Há quem faça da coragem uma missão e da solidariedade um compromisso de vida.
-
-
-  Nos Bombeiros Voluntários de Tábua, estamos ao lado da nossa comunidade nos
-  momentos em que mais precisa. Em cada emergência, em cada vida protegida e em
-  cada gesto de ajuda, renovamos o compromisso que nos une: servir, proteger e
-  cuidar.
-
-
-  Porque estar presente faz toda a diferença.
-heroi_botao1: Ser sócio ou doar
-heroi_botao2: Quero ser bombeiro
+heroi_texto: "Há quem faça da coragem uma missão e da solidariedade um
+  compromisso de vida. Estamos ao lado da nossa comunidade quando mais precisa,
+  com dedicação, coragem e um propósito que nos une: proteger vidas."
+heroi_botao1: Apoie a nossa missão
+heroi_botao2: Junte-se a nós
 ajudar_titulo: Como pode ajudar
 ajudar:
   - titulo: Torne-se sócio
