@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+import Texto from '../components/Texto.astro';
+import { pagina } from '../lib/paginas';
+import { telLink } from '../data/site';
+
+const p = await pagina('exames-conducao');
+
+interface Centro {
+  nome?: string;
+  localidade?: string;
+  morada?: string;
+  telefone?: string;
+  email?: string;
+  horario?: string;
+  mapa?: string;
+  foto?: string;
+  texto?: string;
+}
+
+const centros: Centro[] = (p.centros ?? []).filter((c: Centro) => c && (c.nome || c.localidade));
+const ancora = (t = '') =>
+  t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+
+<Base title={p.titulo} description={p.descricao || undefined}>
+  <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
+
+  <div class="contentor seccao">
+    <div class="prosa">
+      <Texto md={p.intro} />
+    </div>
+
+    {
+      centros.length > 1 && (
+        <nav class="atalhos" aria-label="Centros">
+          {centros.map((c) => (
+            <a href={`#${ancora(c.localidade || c.nome)}`}>{c.localidade || c.nome}</a>
+          ))}
+        </nav>
+      )
+    }
+
+    <h2>{p.centros_titulo || 'Os nossos centros'}</h2>
+    <div class="centros">
+      {
+        centros.map((c) => (
+          <article class="cartao centro" id={ancora(c.localidade || c.nome)}>
+            {c.foto && <img class="foto" src={encodeURI(c.foto)} alt={c.nome ?? ''} loading="lazy" />}
+            {c.localidade && <p class="local">{c.localidade}</p>}
+            <h3>{c.nome}</h3>
+            <dl>
+              {c.morada && (
+                <>
+                  <dt>Morada</dt>
+                  <dd>
+                    {c.morada}
+                    {c.mapa && (
+                      <>
+                        <br />
+                        <a href={c.mapa} rel="noopener">Ver no mapa</a>
+                      </>
+                    )}
+                  </dd>
+                </>
+              )}
+              {c.telefone && (
+                <>
+                  <dt>Telefone</dt>
+                  <dd><a href={telLink(c.telefone)}>{c.telefone}</a></dd>
+                </>
+              )}
+              {c.email && (
+                <>
+                  <dt>Email</dt>
+                  <dd><a href={`mailto:${c.email}`}>{c.email}</a></dd>
+                </>
+              )}
+              {c.horario && (
+                <>
+                  <dt>Horário</dt>
+                  <dd>{c.horario}</dd>
+                </>
+              )}
+            </dl>
+            {c.texto && <div class="texto"><Texto md={c.texto} /></div>}
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="prosa">
+      <Texto md={p.corpo} />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .atalhos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.5rem 0 0;
+  }
+
+  .atalhos a {
+    border: 1px solid var(--linha);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .atalhos a:hover {
+    border-color: var(--vermelho);
+  }
+
+  .centros {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 52rem) {
+    .centros {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .centro {
+    border-top: 4px solid var(--vermelho);
+    scroll-margin-top: 1rem;
+  }
+
+  .centro h3 {
+    margin: 0 0 0.75rem;
+  }
+
+  .local {
+    display: inline-block;
+    margin: 0 0 0.5rem;
+    background: var(--vermelho);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.15em 0.6em;
+    border-radius: 6px;
+  }
+
+  .foto {
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  dt {
+    font-size: 0.85rem;
+    color: var(--tinta-suave);
+    margin-top: 0.6rem;
+  }
+
+  dd {
+    margin: 0.1rem 0 0;
+  }
+
+  .texto {
+    margin-top: 0.75rem;
+  }
+</style>

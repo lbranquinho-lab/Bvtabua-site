@@ -174,7 +174,13 @@ const ano = new Date().getFullYear();
     min-height: 4.5rem;
   }
 
+  .cabecalho__interior,
+  .barra-emergencia__interior {
+    max-width: 90rem;
+  }
+
   .marca {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -257,7 +263,7 @@ const ano = new Date().getFullYear();
     margin-top: 1rem;
   }
 
-  @media (min-width: 76rem) {
+  @media (min-width: 90rem) {
     .menu__botao {
       display: none;
     }
