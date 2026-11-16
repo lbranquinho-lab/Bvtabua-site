@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import CabecalhoPagina from '../../components/CabecalhoPagina.astro';
 import Texto from '../../components/Texto.astro';
+import FacebookPagina from '../../components/FacebookPagina.astro';
 import { pagina } from '../../lib/paginas';
 
 const p = await pagina('noticias');
@@ -18,7 +19,8 @@ const formatarData = (d: Date) =>
 <Base title={p.titulo} description={p.descricao || undefined}>
   <CabecalhoPagina titulo={p.titulo} resumo={p.resumo} />
 
-  <div class="contentor seccao">
+  <div class="contentor seccao colunas">
+    <div>
     <div class="grelha">
       {
         noticias.map((n) => (
@@ -34,10 +36,28 @@ const formatarData = (d: Date) =>
       }
     </div>
     <div class="redes"><Texto md={p.corpo} /></div>
+    </div>
+    <aside><FacebookPagina titulo={p.facebook_titulo || 'No nosso Facebook'} /></aside>
   </div>
 </Base>
 
 <style>
+  .colunas {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .colunas .grelha {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+
+  @media (min-width: 64rem) {
+    .colunas {
+      grid-template-columns: minmax(0, 1fr) 24rem;
+    }
+  }
+
   .noticia img {
     border-radius: 6px;
     margin-bottom: 0.75rem;
