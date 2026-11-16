@@ -33,6 +33,7 @@ export const navegacao = [
   { href: '/associacao/', label: 'A Associação' },
   { href: '/corpo-de-bombeiros/', label: 'Corpo de Bombeiros' },
   { href: '/servicos/', label: 'Serviços' },
+  { href: '/exames-conducao/', label: 'Exames de condução' },
   { href: '/prevencao/', label: 'Prevenção' },
   { href: '/noticias/', label: 'Notícias' },
   { href: '/contactos/', label: 'Contactos' },

@@ -217,6 +217,32 @@ content:
           - { name: url, label: Endereço, type: string }
       - { name: body, label: Conselhos, type: rich-text }
 
+  - name: exames-conducao
+    label: 'Página: Centro de Exames de Condução'
+    type: file
+    path: src/content/paginas/exames-conducao.md
+    fields:
+      - { name: titulo, label: Título da página, type: string, required: true }
+      - { name: resumo, label: Frase por baixo do título, type: text }
+      - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: intro, label: Texto de apresentação, type: rich-text }
+      - { name: centros_titulo, label: Título da lista de centros, type: string }
+      - name: centros
+        label: Centros de exames
+        type: object
+        list: true
+        fields:
+          - { name: nome, label: Nome do centro, type: string }
+          - { name: localidade, label: Localidade, type: string }
+          - { name: morada, label: Morada, type: string }
+          - { name: telefone, label: Telefone, type: string }
+          - { name: email, label: Email, type: string }
+          - { name: horario, label: Horário, type: string }
+          - { name: mapa, label: Ligação para o mapa, type: string }
+          - { name: foto, label: Fotografia, type: image, options: { media: imagens } }
+          - { name: texto, label: Informação adicional, type: rich-text }
+      - { name: body, label: Texto final (marcação de exames), type: rich-text }
+
   - name: noticias-pagina
     label: 'Página: Notícias (lista)'
     type: file
