@@ -23,7 +23,7 @@ Pelo tempo necessário à finalidade e ao cumprimento de obrigações legais.
 
 ## Cookies
 
-Este site não usa cookies de publicidade nem de rastreio.
+Este site não usa cookies de publicidade nem de rastreio. Na página de notícias, as publicações do nosso Facebook só são carregadas se carregar em «Mostrar publicações»; a partir daí, o Facebook pode colocar os seus próprios cookies, segundo a política de privacidade da Meta. O site lembra essa escolha no seu browser.
 
 ## Os seus direitos
 

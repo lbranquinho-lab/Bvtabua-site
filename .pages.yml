@@ -251,6 +251,7 @@ content:
       - { name: titulo, label: Título da página, type: string, required: true }
       - { name: resumo, label: Frase por baixo do título, type: text }
       - { name: descricao, label: Descrição para o Google (opcional), type: text }
+      - { name: facebook_titulo, label: Título da caixa do Facebook, type: string, description: 'A página de Facebook muda-se nas Definições gerais.' }
       - { name: body, label: Texto no fim da lista, type: rich-text }
 
   - name: contactos

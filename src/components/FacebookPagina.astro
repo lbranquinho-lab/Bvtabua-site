@@ -1,0 +1,116 @@
+---
+// Publicações da página de Facebook (plugin oficial «Page Plugin»).
+// Só é carregado quando o visitante carrega no botão: até lá o Facebook não recebe dados
+// nem coloca cookies, como diz a política de privacidade.
+import { site } from '../data/site';
+
+interface Props {
+  titulo?: string;
+}
+
+const { titulo = 'No nosso Facebook' } = Astro.props;
+const url = site.redes.facebook;
+// Só mostra se houver uma página concreta (não apenas «https://www.facebook.com/»).
+const valido = /^https:\/\/(www\.|m\.)?facebook\.com\/[^/?#]+/i.test(url);
+---
+
+{
+  valido && (
+    <section class="facebook cartao" data-pagina={url}>
+      <h2>{titulo}</h2>
+      <div class="facebook__aviso">
+        <p>
+          As publicações vêm diretamente do Facebook. Ao mostrá-las, o Facebook pode registar a sua visita e
+          colocar cookies.
+        </p>
+        <p>
+          <button class="botao botao-primario facebook__botao" type="button">Mostrar publicações</button>
+        </p>
+      </div>
+      <div class="facebook__caixa" hidden />
+      <p class="facebook__ligacao">
+        <a href={url} rel="noopener">Abrir a página no Facebook →</a>
+      </p>
+    </section>
+  )
+}
+
+<style>
+  .facebook {
+    border-top: 4px solid #1877f2;
+  }
+
+  .facebook h2 {
+    margin-top: 0;
+    font-size: 1.3rem;
+  }
+
+  .facebook__aviso p {
+    font-size: 0.95rem;
+    color: var(--tinta-suave);
+  }
+
+  .facebook__caixa {
+    width: 100%;
+    min-height: 200px;
+  }
+
+  .facebook__caixa :global(iframe) {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 6px;
+  }
+
+  .facebook__ligacao {
+    margin: 1rem 0 0;
+    font-size: 0.95rem;
+  }
+</style>
+
+<script>
+  const CHAVE = 'bvt-facebook';
+
+  function carregar(seccao: HTMLElement) {
+    const caixa = seccao.querySelector<HTMLElement>('.facebook__caixa');
+    const aviso = seccao.querySelector<HTMLElement>('.facebook__aviso');
+    if (!caixa || caixa.childElementCount) return;
+    caixa.hidden = false;
+    if (aviso) aviso.hidden = true;
+    // O plugin aceita larguras entre 180 e 500 px.
+    const largura = Math.max(180, Math.min(500, Math.floor(caixa.clientWidth)));
+    const altura = 760;
+    const params = new URLSearchParams({
+      href: seccao.dataset.pagina ?? '',
+      tabs: 'timeline',
+      width: String(largura),
+      height: String(altura),
+      small_header: 'false',
+      adapt_container_width: 'true',
+      hide_cover: 'false',
+      show_facepile: 'false',
+      locale: 'pt_PT',
+    });
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.facebook.com/plugins/page.php?${params}`;
+    iframe.title = 'Publicações da página de Facebook';
+    iframe.height = String(altura);
+    iframe.loading = 'lazy';
+    iframe.setAttribute('allow', 'encrypted-media; picture-in-picture; web-share');
+    caixa.append(iframe);
+  }
+
+  document.querySelectorAll<HTMLElement>('.facebook').forEach((seccao) => {
+    let lembrar = false;
+    try {
+      lembrar = localStorage.getItem(CHAVE) === 'sim';
+    } catch {}
+    if (lembrar) carregar(seccao);
+    seccao.querySelector('.facebook__botao')?.addEventListener('click', () => {
+      try {
+        localStorage.setItem(CHAVE, 'sim');
+      } catch {}
+      carregar(seccao);
+    });
+  });
+</script>
