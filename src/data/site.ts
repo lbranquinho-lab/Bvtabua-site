@@ -35,6 +35,7 @@ export const navegacao = [
   { href: '/servicos/', label: 'Serviços' },
   { href: '/exames-conducao/', label: 'Exames de condução' },
   { href: '/prevencao/', label: 'Prevenção' },
+  { href: '/ocorrencias/', label: 'Ocorrências' },
   { href: '/noticias/', label: 'Notícias' },
   { href: '/contactos/', label: 'Contactos' },
 ];

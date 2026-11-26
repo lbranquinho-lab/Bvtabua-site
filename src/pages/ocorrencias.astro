@@ -32,25 +32,47 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
 
       <div class="filtros">
         <label>
+          Estado
+          <select class="estado">
+            <option value="">Todas as ativas</option>
+          </select>
+        </label>
+        <label>
           Distrito
           <select class="distrito">
-            <option value="">Todo o país</option>
+            <option value="">Todos os distritos</option>
+          </select>
+        </label>
+        <label>
+          Concelho
+          <select class="concelho" disabled>
+            <option value="">Todos os concelhos</option>
           </select>
         </label>
         <label class="so-incendios"><input type="checkbox" class="incendios" /> Só incêndios</label>
-        <p class="hora"></p>
+        <button type="button" class="botao-tabua">Ver Tábua</button>
+        <button type="button" class="limpar">Limpar filtros</button>
       </div>
+      <p class="hora"></p>
 
-      <section class="grupo grupo-tabua" hidden>
-        <h2>Concelho de Tábua</h2>
-        <ul class="lista lista-tabua"></ul>
-      </section>
-
-      <section class="grupo">
-        <h2 class="titulo-lista">Todo o país</h2>
-        <ul class="lista lista-pais"></ul>
-        <p class="vazio" hidden>Não há ocorrências ativas com estes filtros.</p>
-      </section>
+      <h2 class="titulo-lista">Todo o país</h2>
+      <div class="tabela-envolvente">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th scope="col">Ocorrência</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Local</th>
+              <th scope="col">Início</th>
+              <th scope="col" class="num">Operacionais</th>
+              <th scope="col" class="num">Terrestres</th>
+              <th scope="col" class="num">Aéreos</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="vazio" hidden>Não há ocorrências com estes filtros.</p>
     </div>
 
     <p class="fonte">
@@ -116,51 +138,144 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
     min-width: 12rem;
   }
 
+  .filtros button {
+    font: inherit;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 6px;
+    border: 1px solid var(--linha);
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .filtros .botao-tabua {
+    border-color: var(--vermelho);
+    color: var(--vermelho);
+  }
+
+  .filtros select:disabled {
+    opacity: 0.6;
+  }
+
   .hora {
-    margin: 0 0 0.4rem auto;
+    margin: 0 0 0.5rem;
     font-size: 0.9rem;
     color: var(--tinta-suave);
   }
 
-  .grupo h2 {
+  .titulo-lista {
     font-size: 1.3rem;
   }
 
-  .lista {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 0.75rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  .tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
   }
 
-  .lista :global(.ocorrencia) {
-    background: #fff;
-    border: 1px solid var(--linha);
-    border-left: 5px solid var(--cor, var(--vermelho));
-    border-radius: var(--raio);
-    padding: 0.75rem 1rem;
-  }
-
-  .lista :global(strong) {
-    display: block;
-  }
-
-  .lista :global(.estado) {
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-
-  .lista :global(.onde),
-  .lista :global(.meios) {
-    font-size: 0.9rem;
+  .tabela th {
+    text-align: left;
+    font-size: 0.85rem;
     color: var(--tinta-suave);
-    margin: 0.2rem 0 0;
+    border-bottom: 2px solid var(--linha);
+    padding: 0.5rem 0.6rem;
+    white-space: nowrap;
   }
 
-  .grupo-tabua .lista :global(.ocorrencia) {
+  .tabela :global(td) {
+    padding: 0.55rem 0.6rem;
+    border-bottom: 1px solid var(--linha);
+    vertical-align: top;
+  }
+
+  .tabela :global(tr.tabua) {
     background: #fff8e6;
+  }
+
+  .tabela :global(td:first-child) {
+    border-left: 5px solid var(--cor, var(--vermelho));
+    font-weight: 600;
+  }
+
+  .tabela :global(.num),
+  .tabela .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tabela :global(.selo) {
+    display: inline-block;
+    margin-left: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--vermelho);
+  }
+
+  .tabela :global(.sub) {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--tinta-suave);
+  }
+
+  /* No telemóvel cada ocorrência passa a ser uma linha compacta. */
+  @media (max-width: 47.99rem) {
+    .tabela thead {
+      display: none;
+    }
+
+    .tabela,
+    .tabela :global(tbody),
+    .tabela :global(tr) {
+      display: block;
+    }
+
+    .tabela :global(tr) {
+      border-left: 5px solid var(--cor, var(--vermelho));
+      border-bottom: 1px solid var(--linha);
+      padding: 0.6rem 0.75rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.1rem 0.75rem;
+    }
+
+    .tabela :global(td) {
+      border: 0 !important;
+      padding: 0;
+    }
+
+    .tabela :global(td.local) {
+      grid-column: 1 / -1;
+      font-size: 0.9rem;
+    }
+
+    .tabela :global(td.inicio) {
+      grid-row: 1;
+      grid-column: 2;
+      text-align: right;
+      color: var(--tinta-suave);
+      font-size: 0.85rem;
+    }
+
+    .tabela :global(td.estado-c) {
+      font-size: 0.85rem;
+    }
+
+    .tabela :global(td.num) {
+      display: none;
+    }
+
+    .tabela :global(td.meios-m) {
+      display: block;
+      grid-column: 1 / -1;
+      font-size: 0.85rem;
+      color: var(--tinta-suave);
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .tabela :global(td.meios-m) {
+      display: none;
+    }
   }
 
   .fonte,
@@ -172,36 +287,104 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
 </style>
 
 <script>
-  import { lerOcorrencias, cartao, horaAgora, resumo, type Ocorrencia } from '../lib/ocorrencias-cliente';
+  import { lerOcorrencias, horaAgora, resumo, plural, type Ocorrencia } from '../lib/ocorrencias-cliente';
 
   const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
   const painel = $('.painel');
+  const selEstado = $<HTMLSelectElement>('.estado');
   const selDistrito = $<HTMLSelectElement>('.distrito');
+  const selConcelho = $<HTMLSelectElement>('.concelho');
   const chkIncendios = $<HTMLInputElement>('.incendios');
   let todas: Ocorrencia[] = [];
 
-  // Mais meios primeiro: dá prioridade ao que é mais grave.
+  const unicos = (v: string[]) => [...new Set(v.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt'));
+  const contar = (lista: Ocorrencia[], f: (o: Ocorrencia) => boolean) => lista.filter(f).length;
+
+  // Tábua primeiro, depois as mais graves (mais meios).
   const ordenar = (a: Ocorrencia, b: Ocorrencia) =>
-    Number(b.importante) - Number(a.importante) || b.operacionais - a.operacionais || b.inicio - a.inicio;
+    Number(b.tabua) - Number(a.tabua) ||
+    Number(b.importante) - Number(a.importante) ||
+    b.operacionais - a.operacionais ||
+    b.inicio - a.inicio;
+
+  function preencher(sel: HTMLSelectElement, vazio: string, valores: string[], n: (v: string) => number) {
+    const atual = sel.value;
+    sel.replaceChildren(new Option(vazio, ''), ...valores.map((v) => new Option(`${v} (${n(v)})`, v)));
+    sel.value = valores.includes(atual) ? atual : '';
+  }
+
+  function celula(texto: string, classe = '') {
+    const td = document.createElement('td');
+    td.textContent = texto;
+    if (classe) td.className = classe;
+    return td;
+  }
+
+  function linha(o: Ocorrencia) {
+    const tr = document.createElement('tr');
+    if (o.cor) tr.style.setProperty('--cor', `#${o.cor}`);
+    if (o.tabua) tr.className = 'tabua';
+    const nome = celula(o.natureza || 'Ocorrência');
+    if (o.tabua) {
+      const selo = document.createElement('span');
+      selo.className = 'selo';
+      selo.textContent = 'TÁBUA';
+      nome.append(selo);
+    }
+    const local = celula([o.concelho, o.distrito].filter(Boolean).join(', '), 'local');
+    const sitio = [o.localidade, o.freguesia].filter((v, i, a) => v && a.indexOf(v) === i).join(', ');
+    if (sitio) {
+      const s = document.createElement('span');
+      s.className = 'sub';
+      s.textContent = sitio;
+      local.append(s);
+    }
+    const meios = [
+      o.operacionais ? plural(o.operacionais, 'operacional', 'operacionais') : '',
+      o.terrestres ? plural(o.terrestres, 'meio terrestre', 'meios terrestres') : '',
+      o.aereos ? plural(o.aereos, 'meio aéreo', 'meios aéreos') : '',
+    ].filter(Boolean);
+    tr.append(
+      nome,
+      celula(o.estado, 'estado-c'),
+      local,
+      celula(o.hora, 'inicio'),
+      celula(String(o.operacionais || 0), 'num'),
+      celula(String(o.terrestres || 0), 'num'),
+      celula(String(o.aereos || 0), 'num'),
+      celula(meios.join(' · '), 'meios-m'),
+    );
+    return tr;
+  }
 
   function desenhar() {
+    const estado = selEstado.value;
     const distrito = selDistrito.value;
-    const filtradas = todas
-      .filter((o) => !distrito || o.distrito === distrito)
-      .filter((o) => !chkIncendios.checked || o.incendio)
-      .sort(ordenar);
+    const base = todas.filter((o) => (!estado || o.estado === estado) && (!chkIncendios.checked || o.incendio));
+
+    // Concelhos dependem do distrito escolhido.
+    const doDistrito = base.filter((o) => !distrito || o.distrito === distrito);
+    preencher(selConcelho, 'Todos os concelhos', unicos(doDistrito.map((o) => o.concelho)), (c) =>
+      contar(doDistrito, (o) => o.concelho === c),
+    );
+    selConcelho.disabled = !distrito;
+    if (!distrito) selConcelho.value = '';
+    const concelho = selConcelho.value;
+
+    const filtradas = doDistrito.filter((o) => !concelho || o.concelho === concelho).sort(ordenar);
 
     const r = resumo(filtradas);
     for (const chave of ['total', 'incendios', 'operacionais'] as const) {
       $(`[data-n="${chave}"]`).textContent = r[chave].toLocaleString('pt-PT');
     }
 
-    const tabua = todas.filter((o) => o.tabua && (!chkIncendios.checked || o.incendio)).sort(ordenar);
-    $('.lista-tabua').replaceChildren(...tabua.map((o) => cartao(o)));
-    $('.grupo-tabua').hidden = tabua.length === 0 || (distrito !== '' && distrito !== tabua[0].distrito);
-
-    $('.titulo-lista').textContent = distrito ? `Distrito de ${distrito}` : 'Todo o país';
-    $('.lista-pais').replaceChildren(...filtradas.map((o) => cartao(o, true)));
+    $('.titulo-lista').textContent = concelho
+      ? `Concelho de ${concelho}`
+      : distrito
+        ? `Distrito de ${distrito}`
+        : 'Todo o país';
+    $('.tabela tbody').replaceChildren(...filtradas.map(linha));
+    $('.tabela-envolvente').hidden = filtradas.length === 0;
     $('.vazio').hidden = filtradas.length > 0;
   }
 
@@ -215,21 +398,46 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
     todas = lista;
     $('.indisponivel').hidden = true;
 
-    const escolhido = selDistrito.value;
-    const distritos = [...new Set(todas.map((o) => o.distrito).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt'));
-    selDistrito.replaceChildren(
-      new Option('Todo o país', ''),
-      ...distritos.map((d) => new Option(`${d} (${todas.filter((o) => o.distrito === d).length})`, d)),
+    preencher(selEstado, 'Todas as ativas', unicos(todas.map((o) => o.estado)), (e) =>
+      contar(todas, (o) => o.estado === e),
     );
-    selDistrito.value = distritos.includes(escolhido) ? escolhido : '';
+    preencher(selDistrito, 'Todos os distritos', unicos(todas.map((o) => o.distrito)), (d) =>
+      contar(todas, (o) => o.distrito === d),
+    );
 
     $('.hora').textContent = horaAgora();
     painel.hidden = false;
     desenhar();
   }
 
-  selDistrito.addEventListener('change', desenhar);
+  selEstado.addEventListener('change', desenhar);
+  selDistrito.addEventListener('change', () => {
+    selConcelho.value = '';
+    desenhar();
+  });
+  selConcelho.addEventListener('change', desenhar);
   chkIncendios.addEventListener('change', desenhar);
+
+  $('.botao-tabua').addEventListener('click', () => {
+    // Tábua pertence ao distrito de Coimbra; se não houver ocorrências lá, a lista fica vazia.
+    selEstado.value = '';
+    chkIncendios.checked = false;
+    if (![...selDistrito.options].some((op) => op.value === 'Coimbra')) selDistrito.append(new Option('Coimbra (0)', 'Coimbra'));
+    selDistrito.value = 'Coimbra';
+    desenhar();
+    if (![...selConcelho.options].some((op) => op.value === 'Tábua')) selConcelho.append(new Option('Tábua (0)', 'Tábua'));
+    selConcelho.value = 'Tábua';
+    desenhar();
+  });
+
+  $('.limpar').addEventListener('click', () => {
+    selEstado.value = '';
+    selDistrito.value = '';
+    selConcelho.value = '';
+    chkIncendios.checked = false;
+    desenhar();
+  });
+
   atualizar();
   setInterval(atualizar, 120_000);
 </script>
