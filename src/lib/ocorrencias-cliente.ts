@@ -17,6 +17,8 @@ export type Ocorrencia = {
   aereos: number;
   incendio: boolean;
   importante: boolean;
+  lat?: number;
+  lng?: number;
 };
 
 export type Resposta = { ativo: boolean; atualizado?: number; ocorrencias?: Ocorrencia[] };

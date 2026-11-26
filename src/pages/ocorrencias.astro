@@ -55,7 +55,20 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
       </div>
       <p class="hora"></p>
 
-      <h2 class="titulo-lista">Todo o país</h2>
+      <div class="cabeca-lista">
+        <h2 class="titulo-lista">Todo o país</h2>
+        <div class="vistas" role="group" aria-label="Forma de ver">
+          <button type="button" data-vista="lista" aria-pressed="true">Lista</button>
+          <button type="button" data-vista="mapa" aria-pressed="false">Mapa</button>
+        </div>
+      </div>
+      <div class="mapa-envolvente" hidden>
+        <div class="mapa" role="region" aria-label="Mapa das ocorrências"></div>
+        <p class="legenda">
+          Toque num ponto para ver os detalhes. O tamanho do ponto indica o número de operacionais; a cor indica o estado.
+          <span class="sem-local" hidden></span>
+        </p>
+      </div>
       <div class="tabela-envolvente">
         <table class="tabela">
           <thead>
@@ -161,6 +174,70 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
     margin: 0 0 0.5rem;
     font-size: 0.9rem;
     color: var(--tinta-suave);
+  }
+
+  .cabeca-lista {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .cabeca-lista h2 {
+    margin: 0;
+  }
+
+  .vistas {
+    display: inline-flex;
+    border: 1px solid var(--vermelho);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .vistas button {
+    font: inherit;
+    font-weight: 700;
+    border: 0;
+    background: #fff;
+    color: var(--vermelho);
+    padding: 0.4rem 1.1rem;
+    cursor: pointer;
+  }
+
+  .vistas button[aria-pressed='true'] {
+    background: var(--vermelho);
+    color: #fff;
+  }
+
+  .mapa {
+    height: min(70vh, 40rem);
+    min-height: 22rem;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    z-index: 0;
+  }
+
+  .legenda {
+    font-size: 0.85rem;
+    color: var(--tinta-suave);
+  }
+
+  .mapa :global(.leaflet-popup-content) {
+    margin: 0.75rem 0.9rem;
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .mapa :global(.popup strong) {
+    display: block;
+    font-size: 1rem;
+  }
+
+  .mapa :global(.popup p) {
+    margin: 0.2rem 0 0;
   }
 
   .titulo-lista {
@@ -287,6 +364,7 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
 </style>
 
 <script>
+  import 'leaflet/dist/leaflet.css';
   import { lerOcorrencias, horaAgora, resumo, plural, type Ocorrencia } from '../lib/ocorrencias-cliente';
 
   const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
@@ -296,6 +374,107 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
   const selConcelho = $<HTMLSelectElement>('.concelho');
   const chkIncendios = $<HTMLInputElement>('.incendios');
   let todas: Ocorrencia[] = [];
+  let visiveis: Ocorrencia[] = [];
+  let vista: 'lista' | 'mapa' = location.hash === '#mapa' ? 'mapa' : 'lista';
+
+  // ---- Mapa (Leaflet + OpenStreetMap), carregado só quando é pedido ----
+  type L = typeof import('leaflet');
+  let leaflet: L | null = null;
+  let mapa: import('leaflet').Map | null = null;
+  let camada: import('leaflet').LayerGroup | null = null;
+  let ultimoEnquadramento = '';
+  const PORTUGAL: [[number, number], [number, number]] = [[36.9, -9.6], [42.2, -6.1]];
+
+  function popup(o: Ocorrencia) {
+    const div = document.createElement('div');
+    div.className = 'popup';
+    const add = (tag: string, txt: string) => {
+      if (!txt) return;
+      const el = document.createElement(tag);
+      el.textContent = txt;
+      div.append(el);
+    };
+    add('strong', o.natureza || 'Ocorrência');
+    add('p', o.estado + (o.hora ? ` · desde as ${o.hora}` : ''));
+    add('p', [o.localidade, o.freguesia, o.concelho, o.distrito].filter((v, i, a) => v && a.indexOf(v) === i).join(', '));
+    add(
+      'p',
+      [
+        o.operacionais ? plural(o.operacionais, 'operacional', 'operacionais') : '',
+        o.terrestres ? plural(o.terrestres, 'meio terrestre', 'meios terrestres') : '',
+        o.aereos ? plural(o.aereos, 'meio aéreo', 'meios aéreos') : '',
+      ]
+        .filter(Boolean)
+        .join(' · '),
+    );
+    return div;
+  }
+
+  async function desenharMapa() {
+    if (!leaflet) {
+      leaflet = (await import('leaflet')).default as unknown as L;
+      mapa = leaflet.map($('.mapa'), { scrollWheelZoom: false }).fitBounds(PORTUGAL);
+      leaflet
+        .tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Fogos.pt / ANEPC',
+        })
+        .addTo(mapa);
+      camada = leaflet.layerGroup().addTo(mapa);
+    }
+    const Lf = leaflet!;
+    mapa!.invalidateSize();
+    camada!.clearLayers();
+
+    const comLocal = visiveis.filter((o) => o.lat && o.lng);
+    const semLocal = visiveis.length - comLocal.length;
+    const aviso = $('.sem-local');
+    aviso.hidden = semLocal === 0;
+    aviso.textContent = semLocal ? ` ${plural(semLocal, 'ocorrência não tem', 'ocorrências não têm')} localização e só aparece na lista.` : '';
+
+    // Desenhar as maiores primeiro, para as pequenas ficarem por cima e serem clicáveis.
+    const ordem = [...comLocal].sort((a, b) => b.operacionais - a.operacionais);
+    for (const o of ordem) {
+      const cor = o.cor ? `#${o.cor}` : '#b5121b';
+      Lf.circleMarker([o.lat!, o.lng!], {
+        radius: Math.min(22, 6 + Math.sqrt(o.operacionais || 0) * 1.6),
+        color: o.tabua ? '#111' : '#fff',
+        weight: o.tabua ? 3 : 1.5,
+        fillColor: cor,
+        fillOpacity: 0.85,
+      })
+        .bindPopup(popup(o))
+        .bindTooltip(`${o.natureza} · ${o.concelho}`, { direction: 'top' })
+        .addTo(camada!);
+    }
+
+    // Reenquadrar só quando os filtros mudam, não a cada atualização automática.
+    const chave = [selEstado.value, selDistrito.value, selConcelho.value, chkIncendios.checked].join('|');
+    if (chave !== ultimoEnquadramento) {
+      ultimoEnquadramento = chave;
+      if (comLocal.length && (selDistrito.value || selConcelho.value)) {
+        mapa!.fitBounds(Lf.latLngBounds(comLocal.map((o) => [o.lat!, o.lng!] as [number, number])).pad(0.3), {
+          maxZoom: 11,
+        });
+      } else {
+        mapa!.fitBounds(PORTUGAL);
+      }
+    }
+  }
+
+  function mudarVista(nova: 'lista' | 'mapa') {
+    vista = nova;
+    document.querySelectorAll<HTMLButtonElement>('.vistas button').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.vista === nova));
+    });
+    $('.mapa-envolvente').hidden = nova !== 'mapa';
+    history.replaceState(null, '', nova === 'mapa' ? '#mapa' : location.pathname);
+    if (todas.length) desenhar();
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.vistas button').forEach((b) =>
+    b.addEventListener('click', () => mudarVista(b.dataset.vista as 'lista' | 'mapa')),
+  );
 
   const unicos = (v: string[]) => [...new Set(v.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt'));
   const contar = (lista: Ocorrencia[], f: (o: Ocorrencia) => boolean) => lista.filter(f).length;
@@ -384,7 +563,9 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
         ? `Distrito de ${distrito}`
         : 'Todo o país';
     $('.tabela tbody').replaceChildren(...filtradas.map(linha));
-    $('.tabela-envolvente').hidden = filtradas.length === 0;
+    $('.tabela-envolvente').hidden = filtradas.length === 0 || vista !== 'lista';
+    visiveis = filtradas;
+    if (vista === 'mapa') desenharMapa();
     $('.vazio').hidden = filtradas.length > 0;
   }
 
@@ -438,6 +619,7 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
     desenhar();
   });
 
+  if (vista === 'mapa') mudarVista('mapa');
   atualizar();
   setInterval(atualizar, 120_000);
 </script>

@@ -84,7 +84,7 @@ function bvt_pedir($url, $chave) {
 $raiz = isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] !== '' ? $_SERVER['DOCUMENT_ROOT'] : dirname(dirname(__FILE__));
 $base = dirname(rtrim($raiz, '/'));
 $ficheiroChave = $base . '/fogos-chave.txt';
-$ficheiroCache = $base . '/.cache-fogos-v2.json';
+$ficheiroCache = $base . '/.cache-fogos-v3.json';
 
 $chave = is_readable($ficheiroChave) ? trim((string) file_get_contents($ficheiroChave)) : '';
 // Remove carateres invisíveis que alguns editores acrescentam (BOM, quebras de linha).
@@ -152,6 +152,8 @@ foreach ($json['data'] as $o) {
         'aereos' => (int) bvt_valor($o, 'aerial', 0),
         'incendio' => (bool) bvt_valor($o, 'isFire', false),
         'importante' => (bool) bvt_valor($o, 'important', false),
+        'lat' => round((float) bvt_valor($o, 'lat', 0), 5),
+        'lng' => round((float) bvt_valor($o, 'lng', 0), 5),
     );
 }
 
