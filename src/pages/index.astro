@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import { site, telLink } from '../data/site';
 import { pagina } from '../lib/paginas';
 import { linha } from '../lib/texto';
+import Ocorrencias from '../components/Ocorrencias.astro';
 
 const p = await pagina('inicio');
 
@@ -34,6 +35,8 @@ const formatarData = (d: Date) =>
       </a>
     </div>
   </section>
+
+  <Ocorrencias />
 
   <section class="seccao">
     <div class="contentor">
