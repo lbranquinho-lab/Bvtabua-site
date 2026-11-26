@@ -11,6 +11,9 @@
     </div>
     <ul class="ocorrencias__lista"></ul>
     <p class="ocorrencias__vazio" hidden>Não há ocorrências ativas no concelho de Tábua neste momento.</p>
+    <p class="ocorrencias__pais" hidden>
+      <span></span> <a href="/ocorrencias/">Ver as ocorrências de todo o país →</a>
+    </p>
     <p class="ocorrencias__fonte">
       Fonte: <a href="https://fogos.pt" rel="noopener">Fogos.pt</a>, com dados da ANEPC. Informação indicativa e com
       localização aproximada. Em caso de emergência ligue 112.
@@ -54,7 +57,7 @@
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
   }
 
-  .ocorrencias__lista :global(li) {
+  .ocorrencias__lista :global(.ocorrencia) {
     background: #fff;
     border: 1px solid var(--linha);
     border-left: 5px solid var(--cor, var(--vermelho));
@@ -78,73 +81,36 @@
     margin: 0.2rem 0 0;
   }
 
+  .ocorrencias__pais {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+  }
+
   .ocorrencias__vazio {
     margin: 0.75rem 0;
   }
 </style>
 
 <script>
-  type Ocorrencia = {
-    natureza: string;
-    estado: string;
-    cor: string;
-    freguesia: string;
-    localidade: string;
-    hora: string;
-    data: string;
-    operacionais: number;
-    terrestres: number;
-    aereos: number;
-  };
+  import { lerOcorrencias, cartao, horaAgora, resumo, plural } from '../lib/ocorrencias-cliente';
 
   const seccao = document.querySelector<HTMLElement>('.ocorrencias');
 
-  function texto(etiqueta: string, conteudo: string, classe?: string) {
-    const el = document.createElement(etiqueta);
-    el.textContent = conteudo;
-    if (classe) el.className = classe;
-    return el;
-  }
-
-  function mostrar(lista: Ocorrencia[]) {
-    if (!seccao) return;
-    const ul = seccao.querySelector('.ocorrencias__lista')!;
-    const vazio = seccao.querySelector<HTMLElement>('.ocorrencias__vazio')!;
-    ul.replaceChildren(
-      ...lista.map((o) => {
-        const li = document.createElement('li');
-        if (o.cor) li.style.setProperty('--cor', `#${o.cor}`);
-        li.append(texto('strong', o.natureza || 'Ocorrência'));
-        li.append(texto('span', o.estado, 'estado'));
-        const onde = [o.localidade, o.freguesia].filter(Boolean).join(', ');
-        const quando = o.hora ? `desde as ${o.hora}` : '';
-        if (onde || quando) li.append(texto('p', [onde, quando].filter(Boolean).join(' · '), 'onde'));
-        const meios = [
-          o.operacionais ? `${o.operacionais} ${o.operacionais === 1 ? 'operacional' : 'operacionais'}` : '',
-          o.terrestres ? `${o.terrestres} ${o.terrestres === 1 ? 'meio terrestre' : 'meios terrestres'}` : '',
-          o.aereos ? `${o.aereos} ${o.aereos === 1 ? 'meio aéreo' : 'meios aéreos'}` : '',
-        ].filter(Boolean);
-        if (meios.length) li.append(texto('p', meios.join(' · '), 'meios'));
-        return li;
-      }),
-    );
-    vazio.hidden = lista.length > 0;
-    seccao.querySelector('.ocorrencias__hora')!.textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-PT', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })}`;
-    seccao.hidden = false;
-  }
-
   async function atualizar() {
-    try {
-      const r = await fetch('/api/ocorrencias.php', { cache: 'no-store' });
-      if (!r.ok) return;
-      const dados = await r.json();
-      if (dados?.ativo && Array.isArray(dados.ocorrencias)) mostrar(dados.ocorrencias);
-    } catch {
-      // Sem PHP, sem chave ou sem rede: a caixa continua escondida.
-    }
+    if (!seccao) return;
+    const todas = await lerOcorrencias();
+    if (!todas) return;
+    const tabua = todas.filter((o) => o.tabua).sort((a, b) => b.inicio - a.inicio);
+    seccao.querySelector('.ocorrencias__lista')!.replaceChildren(...tabua.map((o) => cartao(o)));
+    seccao.querySelector<HTMLElement>('.ocorrencias__vazio')!.hidden = tabua.length > 0;
+    const pais = seccao.querySelector<HTMLElement>('.ocorrencias__pais')!;
+    const r = resumo(todas);
+    pais.querySelector('span')!.textContent =
+      `Em todo o país: ${plural(r.total, 'ocorrência ativa', 'ocorrências ativas')}` +
+      (r.incendios ? `, ${plural(r.incendios, 'incêndio', 'incêndios')}.` : '.');
+    pais.hidden = false;
+    seccao.querySelector('.ocorrencias__hora')!.textContent = horaAgora();
+    seccao.hidden = false;
   }
 
   if (seccao) {

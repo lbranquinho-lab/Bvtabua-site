@@ -1,5 +1,5 @@
 <?php
-// Ocorrências ativas no concelho de Tábua, a partir da API do Fogos.pt (dados da ANEPC).
+// Ocorrências ativas em todo o país (com as do concelho de Tábua assinaladas), a partir da API do Fogos.pt (dados da ANEPC).
 //
 // A chave de acesso NÃO fica no site: guarde-a num ficheiro «fogos-chave.txt» na pasta
 // principal da conta do cPanel (a pasta acima de public_html). Sem esse ficheiro, este
@@ -84,7 +84,7 @@ function bvt_pedir($url, $chave) {
 $raiz = isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] !== '' ? $_SERVER['DOCUMENT_ROOT'] : dirname(dirname(__FILE__));
 $base = dirname(rtrim($raiz, '/'));
 $ficheiroChave = $base . '/fogos-chave.txt';
-$ficheiroCache = $base . '/.cache-fogos-tabua.json';
+$ficheiroCache = $base . '/.cache-fogos-v2.json';
 
 $chave = is_readable($ficheiroChave) ? trim((string) file_get_contents($ficheiroChave)) : '';
 // Remove carateres invisíveis que alguns editores acrescentam (BOM, quebras de linha).
@@ -132,10 +132,13 @@ if (!is_array($json) || !isset($json['data']) || !is_array($json['data'])) {
 
 $ocorrencias = array();
 foreach ($json['data'] as $o) {
-    if (!is_array($o) || bvt_normalizar(bvt_valor($o, 'concelho')) !== BVT_CONCELHO) continue;
+    if (!is_array($o)) continue;
     $cor = (string) bvt_valor($o, 'statusColor');
     $inicio = bvt_valor($o, 'dateTime', array());
     $ocorrencias[] = array(
+        'tabua' => bvt_normalizar(bvt_valor($o, 'concelho')) === BVT_CONCELHO,
+        'distrito' => (string) bvt_valor($o, 'district'),
+        'concelho' => (string) bvt_valor($o, 'concelho'),
         'natureza' => (string) bvt_valor($o, 'natureza'),
         'estado' => (string) bvt_valor($o, 'status'),
         'cor' => preg_match('/^[0-9A-Fa-f]{6}$/', $cor) ? $cor : '',
@@ -148,6 +151,7 @@ foreach ($json['data'] as $o) {
         'terrestres' => (int) bvt_valor($o, 'terrain', 0),
         'aereos' => (int) bvt_valor($o, 'aerial', 0),
         'incendio' => (bool) bvt_valor($o, 'isFire', false),
+        'importante' => (bool) bvt_valor($o, 'important', false),
     );
 }
 
