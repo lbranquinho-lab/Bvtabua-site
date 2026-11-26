@@ -58,18 +58,18 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
       <div class="cabeca-lista">
         <h2 class="titulo-lista">Todo o país</h2>
         <div class="vistas" role="group" aria-label="Forma de ver">
-          <button type="button" data-vista="lista" aria-pressed="true">Lista</button>
-          <button type="button" data-vista="mapa" aria-pressed="false">Mapa</button>
+          <button type="button" data-vista="lista" aria-pressed="false">Lista</button>
+          <button type="button" data-vista="mapa" aria-pressed="true">Mapa</button>
         </div>
       </div>
-      <div class="mapa-envolvente" hidden>
+      <div class="mapa-envolvente">
         <div class="mapa" role="region" aria-label="Mapa das ocorrências"></div>
         <p class="legenda">
           Toque num ponto para ver os detalhes. O tamanho do ponto indica o número de operacionais; a cor indica o estado.
           <span class="sem-local" hidden></span>
         </p>
       </div>
-      <div class="tabela-envolvente">
+      <div class="tabela-envolvente" hidden>
         <table class="tabela">
           <thead>
             <tr>
@@ -375,7 +375,7 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
   const chkIncendios = $<HTMLInputElement>('.incendios');
   let todas: Ocorrencia[] = [];
   let visiveis: Ocorrencia[] = [];
-  let vista: 'lista' | 'mapa' = location.hash === '#mapa' ? 'mapa' : 'lista';
+  let vista: 'lista' | 'mapa' = location.hash === '#lista' ? 'lista' : 'mapa';
 
   // ---- Mapa (Leaflet + OpenStreetMap), carregado só quando é pedido ----
   type L = typeof import('leaflet');
@@ -468,7 +468,7 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
       b.setAttribute('aria-pressed', String(b.dataset.vista === nova));
     });
     $('.mapa-envolvente').hidden = nova !== 'mapa';
-    history.replaceState(null, '', nova === 'mapa' ? '#mapa' : location.pathname);
+    history.replaceState(null, '', nova === 'lista' ? '#lista' : location.pathname);
     if (todas.length) desenhar();
   }
 
@@ -619,7 +619,7 @@ import CabecalhoPagina from '../components/CabecalhoPagina.astro';
     desenhar();
   });
 
-  if (vista === 'mapa') mudarVista('mapa');
+  mudarVista(vista);
   atualizar();
   setInterval(atualizar, 120_000);
 </script>
