@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import CabecalhoPagina from '../components/CabecalhoPagina.astro';
+---
+
+<Base
+  title="Ocorrências em curso"
+  description="Ocorrências de proteção civil em curso em todo o país, com dados da ANEPC via Fogos.pt."
+>
+  <CabecalhoPagina
+    titulo="Ocorrências em curso"
+    resumo="Incêndios, acidentes e outras ocorrências ativas em todo o país, atualizadas a cada 2 minutos."
+  />
+
+  <div class="contentor seccao">
+    <div class="destaque">
+      <p><strong>Em caso de emergência ligue 112.</strong> Esta lista é informativa e pode ter atraso.</p>
+    </div>
+
+    <p class="aguardar">A carregar as ocorrências…</p>
+    <p class="indisponivel" hidden>
+      Neste momento não é possível mostrar as ocorrências. Consulte <a href="https://fogos.pt" rel="noopener">fogos.pt</a>
+      ou <a href="https://prociv.gov.pt" rel="noopener">prociv.gov.pt</a>.
+    </p>
+
+    <div class="painel" hidden>
+      <dl class="numeros">
+        <div><dt>Ocorrências ativas</dt><dd data-n="total">0</dd></div>
+        <div><dt>Incêndios</dt><dd data-n="incendios">0</dd></div>
+        <div><dt>Operacionais no terreno</dt><dd data-n="operacionais">0</dd></div>
+      </dl>
+
+      <div class="filtros">
+        <label>
+          Distrito
+          <select class="distrito">
+            <option value="">Todo o país</option>
+          </select>
+        </label>
+        <label class="so-incendios"><input type="checkbox" class="incendios" /> Só incêndios</label>
+        <p class="hora"></p>
+      </div>
+
+      <section class="grupo grupo-tabua" hidden>
+        <h2>Concelho de Tábua</h2>
+        <ul class="lista lista-tabua"></ul>
+      </section>
+
+      <section class="grupo">
+        <h2 class="titulo-lista">Todo o país</h2>
+        <ul class="lista lista-pais"></ul>
+        <p class="vazio" hidden>Não há ocorrências ativas com estes filtros.</p>
+      </section>
+    </div>
+
+    <p class="fonte">
+      Fonte: <a href="https://fogos.pt" rel="noopener">Fogos.pt</a>, com dados da ANEPC. Informação indicativa e com
+      localização aproximada.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .numeros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .numeros div {
+    background: var(--fundo-alt);
+    border-radius: var(--raio);
+    padding: 0.9rem 1rem;
+  }
+
+  .numeros dt {
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+
+  .numeros dd {
+    margin: 0.2rem 0 0;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--vermelho);
+    line-height: 1.1;
+  }
+
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .filtros label {
+    display: grid;
+    gap: 0.25rem;
+    font-weight: 600;
+  }
+
+  .filtros .so-incendios {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .filtros select {
+    font: inherit;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--linha);
+    border-radius: 6px;
+    min-width: 12rem;
+  }
+
+  .hora {
+    margin: 0 0 0.4rem auto;
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+
+  .grupo h2 {
+    font-size: 1.3rem;
+  }
+
+  .lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+
+  .lista :global(.ocorrencia) {
+    background: #fff;
+    border: 1px solid var(--linha);
+    border-left: 5px solid var(--cor, var(--vermelho));
+    border-radius: var(--raio);
+    padding: 0.75rem 1rem;
+  }
+
+  .lista :global(strong) {
+    display: block;
+  }
+
+  .lista :global(.estado) {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .lista :global(.onde),
+  .lista :global(.meios) {
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+    margin: 0.2rem 0 0;
+  }
+
+  .grupo-tabua .lista :global(.ocorrencia) {
+    background: #fff8e6;
+  }
+
+  .fonte,
+  .aguardar {
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+    margin-top: 1.5rem;
+  }
+</style>
+
+<script>
+  import { lerOcorrencias, cartao, horaAgora, resumo, type Ocorrencia } from '../lib/ocorrencias-cliente';
+
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  const painel = $('.painel');
+  const selDistrito = $<HTMLSelectElement>('.distrito');
+  const chkIncendios = $<HTMLInputElement>('.incendios');
+  let todas: Ocorrencia[] = [];
+
+  // Mais meios primeiro: dá prioridade ao que é mais grave.
+  const ordenar = (a: Ocorrencia, b: Ocorrencia) =>
+    Number(b.importante) - Number(a.importante) || b.operacionais - a.operacionais || b.inicio - a.inicio;
+
+  function desenhar() {
+    const distrito = selDistrito.value;
+    const filtradas = todas
+      .filter((o) => !distrito || o.distrito === distrito)
+      .filter((o) => !chkIncendios.checked || o.incendio)
+      .sort(ordenar);
+
+    const r = resumo(filtradas);
+    for (const chave of ['total', 'incendios', 'operacionais'] as const) {
+      $(`[data-n="${chave}"]`).textContent = r[chave].toLocaleString('pt-PT');
+    }
+
+    const tabua = todas.filter((o) => o.tabua && (!chkIncendios.checked || o.incendio)).sort(ordenar);
+    $('.lista-tabua').replaceChildren(...tabua.map((o) => cartao(o)));
+    $('.grupo-tabua').hidden = tabua.length === 0 || (distrito !== '' && distrito !== tabua[0].distrito);
+
+    $('.titulo-lista').textContent = distrito ? `Distrito de ${distrito}` : 'Todo o país';
+    $('.lista-pais').replaceChildren(...filtradas.map((o) => cartao(o, true)));
+    $('.vazio').hidden = filtradas.length > 0;
+  }
+
+  async function atualizar() {
+    const lista = await lerOcorrencias();
+    $('.aguardar').hidden = true;
+    if (!lista) {
+      if (!todas.length) $('.indisponivel').hidden = false;
+      return;
+    }
+    todas = lista;
+    $('.indisponivel').hidden = true;
+
+    const escolhido = selDistrito.value;
+    const distritos = [...new Set(todas.map((o) => o.distrito).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt'));
+    selDistrito.replaceChildren(
+      new Option('Todo o país', ''),
+      ...distritos.map((d) => new Option(`${d} (${todas.filter((o) => o.distrito === d).length})`, d)),
+    );
+    selDistrito.value = distritos.includes(escolhido) ? escolhido : '';
+
+    $('.hora').textContent = horaAgora();
+    painel.hidden = false;
+    desenhar();
+  }
+
+  selDistrito.addEventListener('change', desenhar);
+  chkIncendios.addEventListener('change', desenhar);
+  atualizar();
+  setInterval(atualizar, 120_000);
+</script>
